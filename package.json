@@ -1,8 +1,9 @@
 {
   "author": "Perry Woodin <perrywoodin@gmail.com>",
-  "name": "SimplySocial",
-  "homepage": "http://simplysocial.com/",
+  "name": "drk-monitor",
+  "homepage": "",
   "dependencies": {},
+  "repository":"https://github.com/perrywoodin/drk-monitor",
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-banner": "~0.2.0",
