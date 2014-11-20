@@ -1,0 +1,524 @@
+#container { height:100%; }
+
+.normal-text {
+	font-weight: normal;
+}
+
+.hr {
+	border-top: 1px solid #bec3cc;
+	margin: 1.5em 0;
+}
+
+.push-down {
+	padding-top:1.5em;
+}
+.push-left {
+	padding-right: 1em;
+}
+
+.pointer { 
+	cursor: pointer;
+}
+
+/* BEGIN - FORM Inputs */
+	textarea, input {
+		outline:none;
+	}
+
+	.input-group-addon:first-child {
+		border-right: 0;
+		background-color: transparent;
+	}
+
+	.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group>.btn, .input-group-btn:last-child>.dropdown-toggle, .input-group-btn:first-child>.btn:not(:first-child), .input-group-btn:first-child>.btn-group:not(:first-child)>.btn {
+		border-left: 0;
+	}
+
+	.input-group-addon:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child), .input-group .form-control:not(:first-child):not(:last-child) {
+		border-left: 0;
+		border-right: 0;
+	}
+
+	.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group>.btn, .input-group-btn:last-child>.dropdown-toggle, .input-group-btn:first-child>.btn:not(:first-child), .input-group-btn:first-child>.btn-group:not(:first-child)>.btn {
+		border-left: 0;
+		background-color: transparent;
+	}
+
+	.input-group[class*="col-"] {
+		padding-right: 15px;
+		padding-left: 15px;
+	}
+/* END - FORM Inputs */
+
+
+
+/* BEGIN - jumbotron */
+	.bg {
+		background: url('img/bg_posts.jpg') no-repeat center center;
+		position: fixed;
+		width: 100%;
+		height: 423px; /*same height as jumbotron */
+		top:0;
+		left:0;
+		z-index: -1;
+	}
+
+	.jumbotron {
+		position: relative;
+		height: 423px;
+		color: white;
+		text-shadow: #444 0 1px 1px;
+		background:transparent;
+		padding:0;
+		margin-bottom:3.25em;
+
+	}
+
+	.jumbotron-footer {
+		position: absolute;
+		bottom:0;
+		width:100%;
+	}
+
+	.jumbotron-footer > div {
+		margin:0 auto;
+		width:575px;
+	}
+
+	.jumbotron-footer > div > div > img {
+		padding-left:1.5em;
+	}
+
+	/* Make sure the list items align to the bottom */
+	.jumbotron-footer > div > ul{
+		margin-bottom: 0;
+	}
+
+	.jumbotron-footer > div > ul > li {
+		margin-bottom: 4px;
+		margin-right: 1.5em;
+		padding-bottom: 10px;
+		letter-spacing: 1.5px;
+	}
+
+	.jumbotron-footer > div > ul > li.active {
+		margin-bottom: 0;
+		border-bottom: 4px solid #00cc99;
+	}
+
+	.jumbotron-footer > div > ul > li > a {
+		color: #fff;
+		text-decoration: none;
+	}
+
+	.jumbotron-input {
+		position: absolute;
+		top:34%;
+		width:100%;
+	}
+
+	.jumbotron-input > div {
+		padding: 2em;
+		margin:0 auto;
+		width:575px;
+		height:150px;
+		background-color: #139176;
+		opacity: 0.7;
+		border-radius: 3px;
+	}
+
+	.jumbotron-input > div > div > img {
+		padding-top: 15px;
+		padding-right:1.5em;
+	}
+
+	.jumbotron-input > div > div > input {
+		width: 100%;
+		color:#fff;
+		background: 0;
+		border:0;
+		font-size:36px;
+		font-weight: 100;
+		opacity: 0.75;
+		height:75px;
+	}
+
+	input:focus {
+		outline:0;
+	}
+
+	/* BEGIN - Style the placeholder text for the main input */
+		.jumbotron-input > div > div > input::-webkit-input-placeholder {
+		   color: #fff;
+		   opacity: 0.75;
+		}
+
+		.jumbotron-input > div > div > input:-moz-placeholder { /* Firefox 18- */
+		   color: #fff;
+		   opacity: 0.75;  
+		}
+
+		.jumbotron-input > div > div > input::-moz-placeholder {  /* Firefox 19+ */
+		   color: #fff;
+		   opacity: 0.75;  
+		}
+
+		.jumbotron-input > div > div > input:-ms-input-placeholder {  
+		   color: #fff;
+		   opacity: 0.75;  
+		}
+	/* END - Style the placeholder text for the main input */
+/* END - jumbotron */
+
+
+/* Simply social logo */
+div.navbar-header > a > img {
+	margin-top: 13px;
+}
+
+/* The control-bar is in the upper right of the header */
+div.control-bar { 
+	padding-top:10px; 
+	width:275px; 
+}
+
+div.control-bar > div > div > div > input.form-control {
+	background-color: #222; 
+	border: 1px solid #555;
+	border-right:0;
+	width:150px;
+	height: 25px;
+}
+div.control-bar > div > div > div > span.input-group-addon {
+	background-color: #222; 
+	border: 1px solid #555;
+	border-left:0;
+	width:20px;
+	height: 25px;
+	padding:0 5px;
+}
+
+
+
+
+/* BEGIN - POSTS */
+	div.post {
+		margin:2em auto;
+		width:575px;
+		background-color: #fff;
+		border-radius: 5px;
+		border:1px solid #bec3cc;
+		color: #697074;
+		
+	}
+
+	div.post-content {
+		padding: 20px;
+	}
+
+	.push-left { padding-left: 1em; }
+
+	div.post > div.photo {
+		padding: 0;
+		padding-top:0;
+		cursor: pointer;
+	}
+
+	div.post-content a {
+		color: #b5bdc1;
+		
+	}
+
+	/* Reply and Like icons */
+	img.post-actions { 
+		padding-right: 10px; 
+		cursor: pointer;
+	}
+	.post-time {
+		color: #b5bdc1;
+	}
+
+	div.poster {
+		padding-bottom: 5px;
+		font-weight: 200;
+		font-size: 17px;
+		color: #343d41;
+	}
+
+	div.post > div.expand{ 
+		padding-left: 20px; 
+		padding-bottom: 10px;
+		font-size:85%;
+		color: #b5bdc1;
+		cursor: pointer;
+	}
+
+	div.reply-container {
+		padding:0;
+	}
+
+	div.reply {
+		border-top:1px solid #bec3cc;
+		width:100%;
+		margin-left:0;
+		background-color: #f4f5f7;
+		border-bottom-right-radius: 5px;
+		border-bottom-left-radius: 5px;
+		padding-left:0;
+		padding-right:0;
+	}
+
+	div.reply-input {
+		border-top:1px solid #bec3cc;
+		width:100%;
+		margin-left:0;
+		background-color: #f4f5f7;
+		padding: 1.5em;
+		border-bottom-right-radius: 5px;
+		border-bottom-left-radius: 5px;
+	}
+/* END - POSTS */
+
+/* BEGIN - Modals */
+	.modal-dialog {
+		margin: 140px auto;
+		width: 590px;
+	}
+
+	div.modal-close {
+		margin-top:-25px;
+		margin-right:-25px;
+	}
+
+	div.post-modal-wrapper {
+		padding: 20px;
+		background-color: #bec3cc;
+		border-radius:3px;
+	}
+
+	div.photo-modal-wrapper {
+		padding: 2px;
+		background-color: transparent;
+		border-radius:3px;
+		text-align: center;
+	}
+
+	div.photo-modal-wrapper > div.post-content {
+		padding: 20px;
+		text-align: left;
+		margin: 0 auto;
+	}
+
+	div.photo-modal-wrapper > div.reply-input {
+		margin: 0 auto;
+	}
+
+	div.post-modal-wrapper > div.modal-body {
+		background-color: #fff;
+		height:80px;
+		border-radius:3px;
+	}
+
+	div.post-modal-wrapper > div.modal-body > textarea {
+		border:0;
+		width:100%;
+	}
+
+	div.post-modal-wrapper > div.modal-body > input {
+		border:0;
+		width:100%;
+		font-size: 1.5em;
+		font-weight: 200;
+	}
+
+	div.post-modal-wrapper > div.modal-header {
+		padding:0;
+		padding-bottom:15px;
+		border-bottom: 0;
+	}
+
+	div.post-modal-wrapper > div.modal-footer {
+		border-top:0;
+		margin-top:0;
+		padding: 15px 0 0;
+		text-align: left;
+	}
+
+	div.post-modal-wrapper > div.modal-footer img {
+		padding-right: 1.5em;
+	}
+
+	
+/* END - Modals */
+
+
+/* BEGIN - USER Profile */
+	.user-settings button.change-avatar {
+		width:85px;
+	}
+
+	.user-settings .input-group{
+		width:90%;
+	}
+/* END - USER Profile */
+
+/* BEGIN - Profile Dropdown in the header */
+	.profile-menu {
+		position: absolute;
+		border:1px solid #bec3cc;
+		background-color: white;
+		border-radius: 3px;
+		top:35px;
+		left:-20px;
+	}
+
+	.profile-menu > div.arrow-up {
+		width: 0; 
+		height: 0; 
+		border-left: 5px solid transparent;
+		border-right: 5px solid transparent;	
+		border-bottom: 5px solid #fff;
+		margin-top:-5px;
+		margin-left:73px;
+	}
+
+	.profile-menu > ul {
+		margin-bottom: 0;
+	}
+
+	.profile-menu > ul > li {
+		font-size:90%;
+		color: #bec3cc;
+		padding: 5px 20px;
+		border-bottom: 1px solid #bec3cc;
+	}
+
+	.profile-menu > ul > li > a {
+		color: #bec3cc;
+	}
+
+	.profile-menu > ul > li:last-child {
+		border-bottom: 0;
+	}
+/* BEGIN - Profile Dropdown in the header */
+
+
+/* BEGIN - circular checkboxes */
+/* NOTES: This needs to come before toggle buttons*/
+	.content-wrapper { 
+		width: 575px; 
+		margin:0 auto;
+	}
+
+	.clear-navigation { margin-top: 75px !important; }
+
+	input[type='checkbox'] {
+	  -webkit-appearance:none;
+	  width:20px;
+	  height:20px;
+	  border-radius:50%;
+	  outline:none;
+	  box-shadow:0 0 1px 0px gray inset;
+	}
+
+	input[type='checkbox']:before {
+	  content:'';
+	  display:block;
+	  width:60%;
+	  height:60%;
+	  margin: 20% auto;    
+	  border-radius:50%;    
+	}
+	input[type='checkbox']:checked:before {
+	  background:#00b286;
+	}
+/* BEGIN - circular checkboxes */
+
+
+/* BEGIN - radio toggle buttons */
+	.css-switch {
+	  /*display: block;*/
+	  /*margin: 12px auto;*/
+	  position: relative;
+	  width: 52px;
+	  height: 21px;
+	  padding: 3px;
+	  background-color: #fff;
+	  border-radius: 18px;
+	  cursor: pointer;
+	  }
+	/*checkbox is alligned absolute to the label and opacity is set to 0*/
+	.css-switch-check {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  opacity: 0;
+	}
+	/*switch label is the one that would show if the switch is set to on or off*/
+	.css-switch-label {
+	  position: relative;
+	  display: block;
+	  height: inherit;
+	  font-size: 11px;
+	  text-transform:uppercase;
+	  background: #ddd;
+	  border-radius: inherit;
+	}
+	.css-switch-label:before, .css-switch-label:after {
+		position: absolute;
+		top: 50%;
+		margin-top: -.4em;
+		line-height: 1;
+	  }
+	/* the content is set to OFF before*/
+	 .css-switch-label:before {
+		content: "";
+		right: 11px;
+		color: #aaa;
+		/*text-shadow: 0 1px rgba(#fff, .5);*/
+	  }
+	/* the content is set to ON after when the checkbox is clicked*/
+	  .css-switch-label:after {
+		content: "";
+		left: 11px;
+		color: #fff;
+		/*text-shadow: 0 1px rgba(black, .2);*/
+		opacity: 0;
+	  }
+	  
+	  /* background color is changed when the switch is set to ON */
+	  .css-switch-check:checked ~ .css-switch-label {
+		background: #00b286;
+		
+	  }
+	  
+	  .css-switch-check:checked ~ .css-switch-label:before { opacity: 0; }
+	  .css-switch-check:checked ~ .css-switch-label:after { opacity: 1; }
+
+	/* handle is in circular shape and moves from left to right or right to left based on the what the switch is set to*/
+	.css-switch-handle {
+	  position: absolute;
+	  top: 4px;
+	  left: 4px;
+	  width: 19px;
+	  height: 19px;
+	  background: #fff;
+	  border-radius: 20px;
+	}
+	  .css-switch-handle:before {
+		content: '';
+		position: absolute;
+		margin: -6px 0 0 -6px;
+		width: 12px;
+		top: 50%;
+		left: 50%;
+		height: 12px;
+		background: #fff;
+		border-radius: 6px;
+	  }
+	/* when the switch is set to ON, move the handle to the right*/
+	 .css-switch-check:checked ~ .css-switch-handle {
+		left: 29px;
+	  }	
+/* END - radio toggle buttons */
+

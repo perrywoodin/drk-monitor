@@ -1,0 +1,53 @@
+<script>
+	
+var jumboHeight = $('.jumbotron').outerHeight();
+function parallax(){
+    var scrolled = $(window).scrollTop();
+    $('.bg').css('height', (jumboHeight-scrolled) + 'px');
+}
+
+$(window).scroll(function(e){
+    parallax();
+});
+
+</script>
+
+<!-- 
+	!!!!!!!!!!!!!!!!!!!! 
+	I am the top of each post page. 
+	All Posts || Photos || Vidoes
+
+	I contain the JumboTron and quick post input box.
+	!!!!!!!!!!!!!!!!!!!! 
+-->
+<div class="bg"></div>
+<div class="jumbotron">
+	<div class="jumbotron-input">
+		<div>
+			<div>
+				<input type="text" placeholder="What's on your mind" class="quick-input" ng-model="newPost.post" ng-keypress="($event.which === 13)?quickPost():0"/>
+			</div>
+
+			<div>
+				<img src="img/post_addphoto.png" alt="Add Photo">
+				<img src="img/post_addvideo.png" alt="Add Video">
+			</div>
+		</div>
+	</div>
+
+	<div class="jumbotron-footer">
+		<div>
+			<div class="pull-right">
+				<img src="img/viewstate_list.png"/> 
+				<img src="img/viewstate_tile.png"/>
+			</div>
+			<ul class="list-inline">
+				<li ng-class="{active:$state.includes('posts.all')}"><a ui-sref="posts.all">ALL POSTS</a></li>
+				<li ng-class="{active:$state.includes('posts.photos')}"><a ui-sref="posts.photos">PHOTOS</a></li>
+				<li ng-class="{active:$state.includes('posts.videos')}"><a ui-sref="posts.videos">VIDEOS</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div ui-view></div>

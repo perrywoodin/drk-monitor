@@ -1,0 +1,26 @@
+<!-- 
+	!!!!!!!!!!!!!!!!!!!! 
+	I am the modal for displaying a post photo.
+	!!!!!!!!!!!!!!!!!!!! 
+-->
+<div class="pull-right modal-close"><img src="img/modal_close.png" ng-click="cancel()"/></div>
+
+<div class="photo-modal-wrapper">
+	<img ng-src="img/photos/{{post.image}}"/>
+	<div class="row post-content">
+		<div class="col-xs-1"><img ng-src="img/users/{{post.user.avatar}}" alt=""></div>
+		<div class="col-xs-11">
+			<div class="pull-right">
+				<img src="img/post_reply.png" ng-click="toggleReply()" class="post-actions" alt="Reply">
+				<img src="img/post_like.png" ng-click="likePost()" class="post-actions" alt="Like">
+				<span class="post-time">{{post.time}}</span>
+			</div>
+			<div class="poster push-left">{{post.user.full_name}}</div>
+			<div ng-bind-html="post.post" class="push-left"></div>
+		</div>
+	</div>	
+
+	<div class="row reply-input">
+		<input type="text" class="form-control" placeholder="Reply..." ng-model="replyPost.post" ng-keypress="($event.which === 13)?saveReply(post):0">
+	</div>
+</div>

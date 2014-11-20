@@ -1,0 +1,163 @@
+<div class="content-wrapper clear-navigation user-settings">
+<form class="form-horizontal" name="form" novalidate>
+	<h2>Settings</h2>
+
+	<!-- 
+		!!!!!!!!!!!!!!!!!!!! 
+		Account Information 
+		!!!!!!!!!!!!!!!!!!!! 
+	-->
+	<div class="row push-down">
+		<div class="col-xs-4">ACCOUNT</div>
+	</div>
+
+	<div class="row push-down">
+		<div class="col-xs-3 text-center">
+			<img src="img/users/jessica_lg.png" alt="{{CurrentUser.full_name}}">
+			<div class="push-down">
+				<button class="btn btn-sm btn-default change-avatar">change</button>
+			</div>
+		</div>
+		<div class="col-xs-9">
+			<div class="form-group has-feedback" ng-class="{'has-error':form.full_name.$invalid && form.full_name.$dirty, 'has-success':form.full_name.$valid}">
+				<div class="input-group">
+					<span class="input-group-addon"><img src="img/formicon_user.png"></span>
+					<input type="text" name="full_name" class="form-control" placeholder="Name" required ng-model="CurrentUser.full_name">
+				</div>
+			</div>
+
+			<div class="form-group has-feedback" ng-class="{'has-error':form.email.$invalid && form.email.$dirty, 'has-success':form.email.$valid}">
+				<div class="input-group">
+					<span class="input-group-addon"><img src="img/formicon_email.png"></span>
+					<input type="email" name="email" class="form-control" placeholder="Email" required ng-model="CurrentUser.email">
+				</div>
+			</div>
+
+			<div class="form-group has-feedback" ng-class="{'has-error':form.password.$invalid && form.password.$dirty, 'has-success':form.password.$valid}">
+				<div class="input-group">
+					<span class="input-group-addon"><img src="img/formicon_password.png"></span>
+					<input type="password" name="password" class="form-control" placeholder="Password" required ng-model="CurrentUser.password">
+					<span class="input-group-addon text-muted">change</span>
+				</div>
+			</div>
+		</div>
+	</div> 
+
+	<!-- 
+		!!!!!!!!!!!!!!!!!!!! 
+		Notifications
+		!!!!!!!!!!!!!!!!!!!! 
+	-->
+	<div class="row hr"></div>
+
+	<div class="row">
+		<div class="col-xs-12">NOTIFICATIONS</div>
+	</div>
+
+	<div class="row push-down">
+		<div class="col-xs-2">
+			<label class="css-switch">
+				<input type="checkbox" class="css-switch-check" ng-model="CurrentUser.notifications.favorite" ng-checked="CurrentUser.notifications.favorite">
+				<span class="css-switch-label"></span>
+				<span class="css-switch-handle"></span>
+			</label>
+		</div>
+		<div class="col-xs-10">email me when my posts are marked as favorites</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-2">
+			<label class="css-switch">
+				<input type="checkbox" class="css-switch-check" ng-model="CurrentUser.notifications.mention" ng-checked="CurrentUser.notifications.mention">
+				<span class="css-switch-label"></span>
+				<span class="css-switch-handle"></span>
+			</label>
+		</div>
+		<div class="col-xs-10">email me when I'm mentioned</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-2">
+			<label class="css-switch">
+				<input type="checkbox" class="css-switch-check" ng-model="CurrentUser.notifications.reply" ng-checked="CurrentUser.notifications.reply">
+				<span class="css-switch-label"></span>
+				<span class="css-switch-handle"></span>
+			</label>
+		</div>
+		<div class="col-xs-10">email me when I get a reply</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-2">
+			<label class="css-switch">
+				<input type="checkbox" class="css-switch-check" ng-model="CurrentUser.notifications.follow" ng-checked="CurrentUser.notifications.follow">
+				<span class="css-switch-label"></span>
+				<span class="css-switch-handle"></span>
+			</label>
+		</div>
+		<div class="col-xs-10">email me when someone follows me</div>
+	</div>
+
+	<!-- 
+		!!!!!!!!!!!!!!!!!!!! 
+		Privacy
+		!!!!!!!!!!!!!!!!!!!! 
+	-->
+	<div class="row hr"></div>
+
+	<div class="row">
+		<div class="col-xs-12">PRIVACY</div>
+	</div>
+	
+	<div class="row push-down">
+		<div class="col-xs-1">
+			<input type="checkbox" name="privacy1" id="privacy1" ng-model="CurrentUser.privacy.tag_anyone" ng-checked="CurrentUser.privacy.tag_anyone">
+		</div>
+		<div class="col-xs-11"><label class="normal-text" for="privacy1">allow anyone to tag me</label></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1">
+			<input type="checkbox" name="privacy2" id="privacy2" ng-model="CurrentUser.privacy.tag_follow" ng-checked="CurrentUser.privacy.tag_follow">
+		</div>
+		<div class="col-xs-11"><label class="normal-text" for="privacy2">only allow people I follow to tag me</label></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1">
+			<input type="checkbox" name="privacy3" id="privacy3" ng-model="CurrentUser.privacy.tag_deny" ng-checked="CurrentUser.privacy.tag_deny">
+		</div>
+		<div class="col-xs-11"><label class="normal-text" for="privacy3">don't allow anyone to tag me</label></div>
+	</div>
+	
+	<div class="row">
+		<div class="col-xs-1">
+			<input type="checkbox" name="privacy3" id="privacy3" ng-model="CurrentUser.privacy.locations_add" ng-checked="CurrentUser.privacy.locations_add">
+		</div>
+		<div class="col-xs-11"><label class="normal-text" for="privacy3">add a location to my posts</label></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1">
+			<input type="checkbox" name="privacy3" id="privacy3" ng-model="CurrentUser.privacy.findbyemail" ng-checked="CurrentUser.privacy.findbyemail">
+		</div>
+		<div class="col-xs-11"><label class="normal-text" for="privacy3">let others find me by my email address</label></div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1">
+			<input type="checkbox" name="privacy3" id="privacy3" ng-model="CurrentUser.privacy.tailor_ads" ng-checked="CurrentUser.privacy.tailor_ads">
+		</div>
+		<div class="col-xs-11"><label class="normal-text" for="privacy3">tailor ads based on my information</label></div>
+	</div>
+
+	<!-- 
+		!!!!!!!!!!!!!!!!!!!! 
+		Save Form
+		!!!!!!!!!!!!!!!!!!!! 
+	-->
+	<div class="row hr"></div>
+
+	<div class="row">
+		<div class="form-group">
+			<div class="col-xs-11">
+				<button type="btn" class="btn btn-success" ng-click="save()" ng-disabled="form.$invalid">Save Changes</button>
+			</div>
+		</div>
+	</div>
+
+</form>
+</div>

@@ -1,0 +1,29 @@
+<!-- 
+	!!!!!!!!!!!!!!!!!!!! 
+	I am the modal for creating a new post. 
+	!!!!!!!!!!!!!!!!!!!! 
+-->
+<div class="pull-right modal-close"><img src="img/modal_close.png" ng-click="cancel()"/></div>
+
+<div class="post-modal-wrapper">
+
+	<div class="modal-header">
+		<h5 class="modal-title">Create new message</h5>
+	</div>
+	<div class="modal-body">
+		
+		<input type="text" class="modal-input" ng-model="newPost.post" ng-keypress="($event.which === 13)?save():0"//>
+		
+	</div>
+	<div class="modal-footer">
+		<div class="pull-right">
+			<button ng-disabled="form.$invalid" type="submit" class="btn btn-sm btn-success" ng-click="save()"></span>Post</button>	
+		</div>
+	
+		<div>
+			<img src="img/modal_photo.png" alt="Add Photo">
+			<img src="img/modal_video.png" alt="Add Video">
+		</div>
+	</div>
+
+</div>
