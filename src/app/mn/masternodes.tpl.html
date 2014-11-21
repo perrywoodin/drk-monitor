@@ -1,0 +1,36 @@
+<script>
+	
+var jumboHeight = $('.jumbotron').outerHeight();
+function parallax(){
+    var scrolled = $(window).scrollTop();
+    $('.bg').css('height', (jumboHeight-scrolled) + 'px');
+}
+
+$(window).scroll(function(e){
+    parallax();
+});
+
+</script>
+
+<!-- 
+	!!!!!!!!!!!!!!!!!!!! 
+	I am the top of each post page. 
+	All Posts || Photos || Vidoes
+
+	I contain the JumboTron and quick post input box.
+	!!!!!!!!!!!!!!!!!!!! 
+-->
+<div class="bg"></div>
+<div class="jumbotron">
+
+	<div class="jumbotron-input">
+		<div>
+			<div>
+				<label>Filter By:</label>
+				<input type="text" placeholder="IP Address..." class="quick-input" ng-model="newPost.post" ng-keypress="($event.which === 13)?quickPost():0"/>
+			</div>
+		</div>
+	</div>
+
+
+<div ui-view></div>

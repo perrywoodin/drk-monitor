@@ -1,32 +1,11 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-	<div class="container">
-	<div class="navbar-header">
-		<a href="#"><img src="img/logo_simplysocial.png" alt="SimplySocial"></a>
-	</div>
-	<div class="control-bar pull-right">
-		<div class="row">
-			<div class="col-xs-2"><img src="img/header_newpost.png" class="pointer" alt="New Post" ng-click="newPost()"></div>
-			<div class="col-xs-8">
-				
-				<div class="input-group">
-					<input type="text" class="form-control">
-					<span class="input-group-addon"><span class="glyphicons search"></span></span>
-				</div>
-
-			</div>
-			<div class="col-xs-2">
-				<img src="img/header_avatar.png" class="pointer" alt="Profile" ng-click="triggerProfileMenu()">
-				<div ng-show="showProfileMenu" class="profile-menu">
-					<div class="arrow-up"></div>
-					<ul class="list-unstyled">
-						<li>Profile</li>
-						<li>Followers</li>
-						<li>Following</li>
-						<li><a ui-sref="user" ng-click="triggerProfileMenu()">Settings</a></li>
-					</ul>
-				</div>
-			</div>	
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a href="#" class="navbar-brand">
+				<img alt="DarkCoin MasterNode monitor" src="img/darkcoin_logo_horizontal_lt_s.png">
+			</a>
 		</div>
-	</div>
+
+		<p class="navbar-text pull-right">MasterNode Monitor</p>
 	</div>
 </nav>
