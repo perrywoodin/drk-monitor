@@ -1,4 +1,4 @@
-angular.module('masternode', [])
+angular.module('masternode', ['service.masternode'])
 
 .config(['$stateProvider', function ($stateProvider) {
 	$stateProvider.state('masternodes', {
