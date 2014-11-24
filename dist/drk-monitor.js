@@ -1,10 +1,11 @@
-/*! drk-monitor - v - 2014-11-23
+/*! drk-monitor - v - 2014-11-24
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 
  */
 angular.module('app', [
 	'ui.router',
 	'ui.bootstrap',
+	'angular-storage',
 	'templates.app',
 	'templates.common',
 	// Application modules
@@ -28,101 +29,42 @@ angular.module('app').controller('AppCtrl', ['$rootScope', '$scope', '$log', '$s
 	$scope.$state = $state; 
 
 }]);
-angular.module('service.masternode',[])
+angular.module('service.masternode',['angular-storage'])
 
-.factory('MasternodeService', ['$http', '$log', '$q', function ($http, $log, $q) {
+.factory('MasternodeService', ['$http', '$log', '$q', 'store', function ($http, $log, $q, store) {
 
-	var allPosts = [];
-	var Posts = [];
-	var Post = {
-		id: null,
-		parent:null,
-		post:null,
-		type:null,
-		datetime:null,
-		like:false,
-		response:[],
-		image:null,
-		user:null
-	};
+	var MasterNodes = [];
+	var myMasterNodes = [1,2,3];
+	var MasterNode = {};
 	
 	var Service = {
-
-		getPost: function(){
-			var newPost = angular.copy(Post);
-			return newPost;
-		},
 		
-		getPosts: function(){
-			// If Posts are already loaded, don't get 
-			// them from the json file. Instead, return
-			// the existing posts as a promise. This is 
-			// a little workaround since we don't have a 
-			// persistence layer. 
-			if(Posts.length){
-				var deferred = $q.defer();
-				deferred.resolve(Posts);
-				return deferred.promise;
-			} else {
-				var request = $http.get('json/posts.json');
-				return request.then(function(response){
-					allPosts = response.data.posts;
-					allPosts.forEach(function(post){
-						if(!post.parent){
-							Posts.push(post);
-						}
-					});
-					return Posts;
-				});
-			}
-		},
-
-		getReplies: function(id){
-			var Replies = [];
-			allPosts.forEach(function(post){
-				if(post.parent === id){
-					Replies.push(post);
-				}
+		getMasterNodes: function(){
+			var request = $http.get('json/masternodes.json');
+			return request.then(function(response){
+				MasterNodes = response.data.data;
+				return MasterNodes;
 			});
-			return Replies;
-		},
-
-		add:function(post){
-			if(!post.post){
-				return;
-			}
-			var newPost = angular.copy(Post);
-			var Today = new Date();
-			var id = Math.random().toString(36).substring(7);
-
 			
-			newPost['id'] = id;
-			newPost['user'] = UserService.getUser();
-			newPost['datetime'] = Date.parse(Today);
-			newPost['post'] = post.post;
-
-			Posts.unshift(newPost);
 		},
 
-		reply:function(post,replyto_post){
-			var newPost = angular.copy(Post);
-			var Today = new Date();
-			var id = Math.random().toString(36).substring(7);
-			var parentPost = replyto_post;
+		getMyMasterNodes: function(){
+			var storedMasternodes = store.get('mns');
+			myMasterNodes = storedMasternodes;
+			var deferred = $q.defer();
+			deferred.resolve(myMasterNodes);
+			return deferred.promise;
+		},
 
-			newPost['id'] = id;
-			newPost['post'] = post.post;
-			newPost['parent'] = parentPost.id;
-			newPost['user'] = UserService.getUser();
-			newPost['datetime'] = Date.parse(Today);
-			// We don't have a persistence layer, so
-			// put this new post into the allPosts array.
-			allPosts.unshift(newPost);
-			return newPost;
+		saveToMyMasterNodes: function(ipaddress){
+			store.set('mns',myMasterNodes);
+		},
+
+		deleteFromMyMasterNodes: function(){
+
 		}
 
 	};
-
 
 	return Service;
 }]);
@@ -141,8 +83,42 @@ angular.module('masternode', ['service.masternode'])
 		})
 		
 	;
-}]);
+}])
 
+
+.controller('MasterNodesCtrl', ['$scope', '$log', '$state', '$modal', 'MasternodeService', function ($scope, $log, $state, $modal, MasternodeService) {
+
+	var focusInput = function(){
+		// Focus the cursor on the jumbotron input
+		$('.quick-input').focus();
+	};
+
+	focusInput();
+
+	$scope.filter = {
+		ipaddress:null
+	};
+
+	$scope.masternodes = MasternodeService.getMasterNodes().then(function(response){
+		$log.log(response);
+	});
+
+	$scope.myMasternodes = MasternodeService.getMyMasterNodes().then(function(response){
+		$log.log(response);
+	});
+
+	$scope.addToMyList = function(){
+		var ipaddress = $scope.filter['ipaddress'];
+
+		MasternodeService.saveToMyMasterNodes(ipaddress);
+
+		$scope.filter['ipaddress'] = null;
+	};
+
+	
+}])
+
+;
 angular.module('directives', []);
 
 angular.module('resources', [ 
@@ -189,14 +165,7 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "\n" +
     "</script>\n" +
     "\n" +
-    "<!-- \n" +
-    "	!!!!!!!!!!!!!!!!!!!! \n" +
-    "	I am the top of each post page. \n" +
-    "	All Posts || Photos || Vidoes\n" +
     "\n" +
-    "	I contain the JumboTron and quick post input box.\n" +
-    "	!!!!!!!!!!!!!!!!!!!! \n" +
-    "-->\n" +
     "<div class=\"bg\"></div>\n" +
     "<div class=\"jumbotron\">\n" +
     "\n" +
@@ -204,7 +173,7 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "		<div>\n" +
     "			<div>\n" +
     "				<label>Filter By:</label>\n" +
-    "				<input type=\"text\" placeholder=\"IP Address...\" class=\"quick-input\" ng-model=\"newPost.post\" ng-keypress=\"($event.which === 13)?quickPost():0\"/>\n" +
+    "				<input type=\"text\" placeholder=\"IP Address...\" class=\"quick-input\" ng-model=\"filter.ipaddress\" ng-keypress=\"($event.which === 13)?addToMyList():0\"/>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "	</div>\n" +

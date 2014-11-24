@@ -1,6 +1,7 @@
 angular.module('app', [
 	'ui.router',
 	'ui.bootstrap',
+	'angular-storage',
 	'templates.app',
 	'templates.common',
 	// Application modules

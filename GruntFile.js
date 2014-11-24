@@ -93,7 +93,8 @@ module.exports = function (grunt) {
 						// 2 copy file from bower_components to vendor
 						// 3 make updates to glyphicons as noted in wiki link above
 						'vendor/angular-bootstrap/ui-bootstrap-tpls-0.12.0-SNAPSHOT.min.js',
-						'bower_components/angular-ui-router/release/angular-ui-router.min.js'
+						'bower_components/angular-ui-router/release/angular-ui-router.min.js',
+						'bower_components/a0-angular-storage/dist/angular-storage.min.js'
 					],
 				dest: '<%= distdir %>/angular.js'
 			},	

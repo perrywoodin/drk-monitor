@@ -31,14 +31,7 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "\n" +
     "</script>\n" +
     "\n" +
-    "<!-- \n" +
-    "	!!!!!!!!!!!!!!!!!!!! \n" +
-    "	I am the top of each post page. \n" +
-    "	All Posts || Photos || Vidoes\n" +
     "\n" +
-    "	I contain the JumboTron and quick post input box.\n" +
-    "	!!!!!!!!!!!!!!!!!!!! \n" +
-    "-->\n" +
     "<div class=\"bg\"></div>\n" +
     "<div class=\"jumbotron\">\n" +
     "\n" +
@@ -46,7 +39,7 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "		<div>\n" +
     "			<div>\n" +
     "				<label>Filter By:</label>\n" +
-    "				<input type=\"text\" placeholder=\"IP Address...\" class=\"quick-input\" ng-model=\"newPost.post\" ng-keypress=\"($event.which === 13)?quickPost():0\"/>\n" +
+    "				<input type=\"text\" placeholder=\"IP Address...\" class=\"quick-input\" ng-model=\"filter.ipaddress\" ng-keypress=\"($event.which === 13)?addToMyList():0\"/>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "	</div>\n" +
