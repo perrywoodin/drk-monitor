@@ -1,4 +1,6 @@
 drk-monitor
 ===========
 
-MS
+MasterNode monitor front-end.
+
+Relies on https:/drk.mn/api/masternodes API.
