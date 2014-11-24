@@ -9,14 +9,14 @@ angular.module('masternode', ['service.masternode'])
 
 		.state('masternodes.list',{
 			url: '/list',
-			template:'mn/masternodes-list.tpl.html'
+			templateUrl:'mn/masternodes-list.tpl.html'
 		})
 		
 	;
 }])
 
 
-.controller('MasterNodesCtrl', ['$scope', '$log', '$state', '$modal', 'MasternodeService', function ($scope, $log, $state, $modal, MasternodeService) {
+.controller('MasterNodesCtrl', ['$scope', '$log', '$state', '$modal', '$timeout', 'MasternodeService', function ($scope, $log, $state, $modal, $timeout, MasternodeService) {
 
 	var focusInput = function(){
 		// Focus the cursor on the jumbotron input
@@ -26,16 +26,48 @@ angular.module('masternode', ['service.masternode'])
 	focusInput();
 
 	$scope.filter = {
-		ipaddress:null
+		ipaddress:null,
+		showAll: true
 	};
 
-	$scope.masternodes = MasternodeService.getMasterNodes().then(function(response){
-		$log.log(response);
+	var getMasterNodes = function(){
+		return MasternodeService.getMasterNodes().then(function(response){
+			$scope.masternodes = response;
+		});
+	};
+
+	var requestTimeout = null;
+	var reloadMasterNodes = function(){
+		requestTimeout = $timeout(function(){
+			loadMasterNodes();
+		}, 300000);	// 5minutes	
+	};
+
+	var loadMasterNodes = function(){
+		getMasterNodes()
+			.then(reloadMasterNodes);
+	};
+
+	loadMasterNodes();
+
+	MasternodeService.getMyMasterNodes().then(function(response){
+		$scope.myMasternodes = response;
 	});
 
-	$scope.myMasternodes = MasternodeService.getMyMasterNodes().then(function(response){
-		$log.log(response);
-	});
+	$scope.toggleFilter = function(){
+		$scope.filter['showAll'] = !$scope.filter['showAll'];
+	};
+
+	$scope.filterMNs = function(node){
+		if($scope.filter.showAll){
+			return true;
+		}
+		
+		if($scope.myMasternodes.indexOf(node.MasternodeIP) !== -1){
+			return true;
+		}
+		
+	};
 
 	$scope.addToMyList = function(){
 		var ipaddress = $scope.filter['ipaddress'];
@@ -43,6 +75,10 @@ angular.module('masternode', ['service.masternode'])
 		MasternodeService.saveToMyMasterNodes(ipaddress);
 
 		$scope.filter['ipaddress'] = null;
+	};
+
+	$scope.removeFromMyList = function(ipaddress){
+		MasternodeService.deleteFromMyMasterNodes(ipaddress);
 	};
 
 	

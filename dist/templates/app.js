@@ -1,4 +1,4 @@
-angular.module('templates.app', ['header.tpl.html', 'mn/masternodes.tpl.html']);
+angular.module('templates.app', ['header.tpl.html', 'mn/masternodes-list.tpl.html', 'mn/masternodes.tpl.html']);
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
@@ -10,9 +10,55 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "			</a>\n" +
     "		</div>\n" +
     "\n" +
-    "		<p class=\"navbar-text pull-right\">MasterNode Monitor</p>\n" +
+    "		<p class=\"navbar-text pull-right hidden-xs\">MasterNode Monitor</p>\n" +
     "	</div>\n" +
     "</nav>");
+}]);
+
+angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("mn/masternodes-list.tpl.html",
+    "<div class=\"container row\">\n" +
+    "\n" +
+    "	<div class=\"col-sm-3\">\n" +
+    "\n" +
+    "		<button class=\"btn btn-default btn-xs\" ng-click=\"toggleFilter()\">\n" +
+    "			<span ng-if=\"!filter.showAll\">Show All</span>\n" +
+    "			<span ng-if=\"filter.showAll\">Filter Mine</span>\n" +
+    "		</button>\n" +
+    "		\n" +
+    "		<h5>My MasterNodes</h5>\n" +
+    "\n" +
+    "\n" +
+    "		<div ng-class=\"{'text-muted':filter.showAll}\" ng-repeat=\"node in myMasternodes\">\n" +
+    "			<a class=\"pull-right\" title=\"Remove {{node}}\" href=\"#\" ng-click=\"removeFromMyList(node)\"><span class=\"glyphicons bin\"></span></a>\n" +
+    "			{{node}}\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div class=\"col-sm-9\">\n" +
+    "\n" +
+    "		<table class=\"table table-condensed table-hover\">\n" +
+    "		<thead>\n" +
+    "			<tr>\n" +
+    "				<th>IP Address</th>\n" +
+    "				<th>Public Key</th>\n" +
+    "				<th>Balance</th>\n" +
+    "			</tr>\n" +
+    "		</thead>		\n" +
+    "		<tbody>\n" +
+    "			<tr ng-repeat=\"node in masternodes | filter: filterMNs\">\n" +
+    "				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>\n" +
+    "				<td>{{node.MNPubKey}}</td>\n" +
+    "				<td>{{node.Balance.Value}}</td>\n" +
+    "			</tr>\n" +
+    "		</tbody>\n" +
+    "\n" +
+    "		</table>		\n" +
+    "\n" +
+    "	</div>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -43,7 +89,7 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "			</div>\n" +
     "		</div>\n" +
     "	</div>\n" +
-    "\n" +
+    "</div>\n" +
     "\n" +
     "<div ui-view></div>");
 }]);

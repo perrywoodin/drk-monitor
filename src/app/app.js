@@ -5,9 +5,7 @@ angular.module('app', [
 	'templates.app',
 	'templates.common',
 	// Application modules
-	'masternode',
-	// Resources interact with the API
-	'resources',
+	'masternode'
 ]);
 
 

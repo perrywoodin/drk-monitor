@@ -1,0 +1,41 @@
+<div class="container row">
+
+	<div class="col-sm-3">
+
+		<button class="btn btn-default btn-xs" ng-click="toggleFilter()">
+			<span ng-if="!filter.showAll">Show All</span>
+			<span ng-if="filter.showAll">Filter Mine</span>
+		</button>
+		
+		<h5>My MasterNodes</h5>
+
+
+		<div ng-class="{'text-muted':filter.showAll}" ng-repeat="node in myMasternodes">
+			<a class="pull-right" title="Remove {{node}}" href="#" ng-click="removeFromMyList(node)"><span class="glyphicons bin"></span></a>
+			{{node}}
+		</div>
+	</div>
+
+	<div class="col-sm-9">
+
+		<table class="table table-condensed table-hover">
+		<thead>
+			<tr>
+				<th>IP Address</th>
+				<th>Public Key</th>
+				<th>Balance</th>
+			</tr>
+		</thead>		
+		<tbody>
+			<tr ng-repeat="node in masternodes | filter: filterMNs">
+				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>
+				<td>{{node.MNPubKey}}</td>
+				<td>{{node.Balance.Value}}</td>
+			</tr>
+		</tbody>
+
+		</table>		
+
+	</div>
+</div>
+

@@ -20,6 +20,13 @@
 	cursor: pointer;
 }
 
+.footer {
+	width:98%;
+	text-align: center;
+	margin: 1.0em auto;
+	padding-top: 1.0em;
+}
+
 /* BEGIN - FORM Inputs */
 	textarea, input {
 		outline:none;
