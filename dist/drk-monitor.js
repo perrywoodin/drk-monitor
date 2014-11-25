@@ -1,4 +1,5 @@
-/*! drk-monitor - v - 2014-11-24
+/*! drk-monitor - v0.0.4 - 2014-11-25
+ * http://drk.monitor.mn
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 
  */
@@ -133,6 +134,15 @@ angular.module('masternode', ['service.masternode'])
 		showAll: true
 	};
 
+	MasternodeService.getMyMasterNodes().then(function(response){
+		// If My Masternodes is populated, 
+		// default to showing only my nodes.
+		if(response.length){
+			$scope.filter['showAll'] = false;
+		}
+		$scope.myMasternodes = response;
+	});
+
 	var getMasterNodes = function(){
 		return MasternodeService.getMasterNodes().then(function(response){
 			$scope.masternodes = response;
@@ -144,7 +154,7 @@ angular.module('masternode', ['service.masternode'])
 		requestTimeout = $timeout(function(){
 			loadMasterNodes();
 		}, 300000);	// 5minutes	
-	};
+	}; 
 
 	var loadMasterNodes = function(){
 		getMasterNodes()
@@ -152,10 +162,6 @@ angular.module('masternode', ['service.masternode'])
 	};
 
 	loadMasterNodes();
-
-	MasternodeService.getMyMasterNodes().then(function(response){
-		$scope.myMasternodes = response;
-	});
 
 	$scope.toggleFilter = function(){
 		$scope.filter['showAll'] = !$scope.filter['showAll'];
@@ -177,6 +183,7 @@ angular.module('masternode', ['service.masternode'])
 
 		MasternodeService.saveToMyMasterNodes(ipaddress);
 
+		$scope.filter['showAll'] = false;
 		$scope.filter['ipaddress'] = null;
 	};
 

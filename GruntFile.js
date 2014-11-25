@@ -3,6 +3,16 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		distdir: 'dist',
 		pkg: grunt.file.readJSON('package.json'),
+		
+		bump: {
+			options: {
+				files: ['package.json'],
+				updateConfigs: [],
+				commit:false,
+				push:false
+			}
+		},
+
 		banner:
 			'/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
 			'<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
@@ -21,6 +31,8 @@ module.exports = function (grunt) {
 			less: ['src/less/stylesheet.less'], // recess:build doesn't accept ** in its file patterns
 			lessWatch: ['src/less/**/*.less']
 		},
+
+		
 
 		clean: {
 			// Delete all files (not folders) in the distdir that are not .svn
@@ -210,8 +222,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-html2js');
+	grunt.loadNpmTasks('grunt-bump');
 	
 
-	require('load-grunt-tasks')(grunt, {scope: 'devDependencies'});
+	// require('load-grunt-tasks')(grunt, {scope: 'devDependencies'});
 
 };
