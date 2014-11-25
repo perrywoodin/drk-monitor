@@ -5,7 +5,8 @@ angular.module('app', [
 	'templates.app',
 	'templates.common',
 	// Application modules
-	'masternode'
+	'masternode',
+	'services'
 ]);
 
 

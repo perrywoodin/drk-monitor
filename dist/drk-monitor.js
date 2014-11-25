@@ -1,4 +1,4 @@
-/*! drk-monitor - v0.0.4 - 2014-11-25
+/*! drk-monitor - v0.0.34 - 2014-11-25
  * http://drk.monitor.mn
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 
@@ -10,7 +10,8 @@ angular.module('app', [
 	'templates.app',
 	'templates.common',
 	// Application modules
-	'masternode'
+	'masternode',
+	'services'
 ]);
 
 
@@ -30,7 +31,7 @@ angular.module('app').controller('AppCtrl', ['$rootScope', '$scope', '$log', '$s
 }]);
 angular.module('service.masternode',['angular-storage'])
 
-.factory('MasternodeService', ['$http', '$log', '$q', 'store', function ($http, $log, $q, store) {
+.factory('MasternodeService', ['$http', '$log', '$q', 'store', 'DateTimeService', function ($http, $log, $q, store, DateTimeService) {
 
 	var MasterNodes = [];
 	var myMasterNodes = [];
@@ -50,12 +51,19 @@ angular.module('service.masternode',['angular-storage'])
 	var Service = {
 		
 		getMasterNodes: function(){
-			var request = $http.get('https://drk.mn/api/masternodes?balance=1');
+			//json/masternodes.json
+			var request = $http.get('https://drk.mn/api/masternodes?balance=1&portcheck=1');
 			return request.then(function(response){
 				MasterNodes = response.data.data;
+
+				MasterNodes.forEach(function(node){
+					node.MNLastSeen = DateTimeService.deltaTimeStampHR(node.MNLastSeen,DateTimeService.currenttimestamp());
+
+					node.Portcheck.NextCheck = DateTimeService.deltaTimeStampHR(node.Portcheck.NextCheck,DateTimeService.currenttimestamp());
+				});
+
 				return MasterNodes;
 			});
-			
 		},
 
 		getMyMasterNodes: function(){
@@ -199,6 +207,53 @@ angular.module('directives', []);
 
 angular.module('resources', [ 
 ]);
+angular.module('services.datetime',[])
+
+.factory('DateTimeService', ['$log', function ($log) {
+	
+	var diffHR = function(diff) {
+		var s = Math.floor( diff % 60 );
+		var m = Math.floor( diff / 60 % 60 );
+		var h = Math.floor( diff / 3600 % 24 );
+		var d = Math.floor( diff / 86400 % 7 );
+		var w = Math.floor( diff / 604800 );
+		var rtxt = '';
+		if (w > 0) {
+		rtxt += w+'w';
+		}
+		if (d > 0) {
+		rtxt += d+'d';
+		}
+		if (h > 0) {
+		rtxt += h+'h';
+		}
+		if (m > 0) {
+		rtxt += m+'m';
+		}
+		if (s > 0) {
+		rtxt += s+'s';
+		}
+		return rtxt;
+	};
+
+	var Service = {
+
+		currenttimestamp: function() {
+			return Math.round(new Date().getTime() / 1000);
+		}, 
+
+		deltaTimeStampHR: function(ts1,ts2) {
+			var diff = Math.abs( ts2 - ts1 );
+			return diffHR(diff);
+		}
+
+	};
+
+	return Service;
+}]);
+angular.module('services', [ 
+	'services.datetime'
+]);
 var jumboHeight = $('.jumbotron').outerHeight();
 function parallax(){
     var scrolled = $(window).scrollTop();
@@ -252,14 +307,18 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "			<tr>\n" +
     "				<th>IP Address</th>\n" +
     "				<th>Public Key</th>\n" +
+    "				<th>Next Check</th>\n" +
+    "				<th>Last Seen</th>\n" +
     "				<th>Balance</th>\n" +
     "			</tr>\n" +
     "		</thead>		\n" +
     "		<tbody>\n" +
-    "			<tr ng-repeat=\"node in masternodes | filter: filterMNs\">\n" +
+    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMNs\">\n" +
     "				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>\n" +
-    "				<td>{{node.MNPubKey}}</td>\n" +
-    "				<td>{{node.Balance.Value}}</td>\n" +
+    "				<td><span class=\"glyphicons keys\" popover-placement=\"top\" popover=\"{{node.MNPubKey}}\"></span></td>\n" +
+    "				<td>{{node.Portcheck.NextCheck}}</td>\n" +
+    "				<td>{{node.MNLastSeen}}</td>\n" +
+    "				<td>{{node.Balance.Value | number:5}}</td>\n" +
     "			</tr>\n" +
     "		</tbody>\n" +
     "\n" +
@@ -267,7 +326,6 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "\n" +
     "	</div>\n" +
     "</div>\n" +
-    "\n" +
     "");
 }]);
 

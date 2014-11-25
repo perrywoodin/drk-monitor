@@ -42,14 +42,18 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "			<tr>\n" +
     "				<th>IP Address</th>\n" +
     "				<th>Public Key</th>\n" +
+    "				<th>Next Check</th>\n" +
+    "				<th>Last Seen</th>\n" +
     "				<th>Balance</th>\n" +
     "			</tr>\n" +
     "		</thead>		\n" +
     "		<tbody>\n" +
-    "			<tr ng-repeat=\"node in masternodes | filter: filterMNs\">\n" +
+    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMNs\">\n" +
     "				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>\n" +
-    "				<td>{{node.MNPubKey}}</td>\n" +
-    "				<td>{{node.Balance.Value}}</td>\n" +
+    "				<td><span class=\"glyphicons keys\" popover-placement=\"top\" popover=\"{{node.MNPubKey}}\"></span></td>\n" +
+    "				<td>{{node.Portcheck.NextCheck}}</td>\n" +
+    "				<td>{{node.MNLastSeen}}</td>\n" +
+    "				<td>{{node.Balance.Value | number:5}}</td>\n" +
     "			</tr>\n" +
     "		</tbody>\n" +
     "\n" +
@@ -57,7 +61,6 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "\n" +
     "	</div>\n" +
     "</div>\n" +
-    "\n" +
     "");
 }]);
 

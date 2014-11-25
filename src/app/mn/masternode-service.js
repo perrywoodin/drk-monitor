@@ -1,6 +1,6 @@
 angular.module('service.masternode',['angular-storage'])
 
-.factory('MasternodeService', ['$http', '$log', '$q', 'store', function ($http, $log, $q, store) {
+.factory('MasternodeService', ['$http', '$log', '$q', 'store', 'DateTimeService', function ($http, $log, $q, store, DateTimeService) {
 
 	var MasterNodes = [];
 	var myMasterNodes = [];
@@ -20,12 +20,19 @@ angular.module('service.masternode',['angular-storage'])
 	var Service = {
 		
 		getMasterNodes: function(){
-			var request = $http.get('https://drk.mn/api/masternodes?balance=1');
+			//json/masternodes.json
+			var request = $http.get('https://drk.mn/api/masternodes?balance=1&portcheck=1');
 			return request.then(function(response){
 				MasterNodes = response.data.data;
+
+				MasterNodes.forEach(function(node){
+					node.MNLastSeen = DateTimeService.deltaTimeStampHR(node.MNLastSeen,DateTimeService.currenttimestamp());
+
+					node.Portcheck.NextCheck = DateTimeService.deltaTimeStampHR(node.Portcheck.NextCheck,DateTimeService.currenttimestamp());
+				});
+
 				return MasterNodes;
 			});
-			
 		},
 
 		getMyMasterNodes: function(){

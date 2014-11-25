@@ -23,14 +23,18 @@
 			<tr>
 				<th>IP Address</th>
 				<th>Public Key</th>
+				<th>Next Check</th>
+				<th>Last Seen</th>
 				<th>Balance</th>
 			</tr>
 		</thead>		
 		<tbody>
-			<tr ng-repeat="node in masternodes | filter: filterMNs">
+			<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in masternodes | filter: filterMNs">
 				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>
-				<td>{{node.MNPubKey}}</td>
-				<td>{{node.Balance.Value}}</td>
+				<td><span class="glyphicons keys" popover-placement="top" popover="{{node.MNPubKey}}"></span></td>
+				<td>{{node.Portcheck.NextCheck}}</td>
+				<td>{{node.MNLastSeen}}</td>
+				<td>{{node.Balance.Value | number:5}}</td>
 			</tr>
 		</tbody>
 
@@ -38,4 +42,3 @@
 
 	</div>
 </div>
-

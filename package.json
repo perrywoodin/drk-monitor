@@ -3,7 +3,7 @@
   "name": "drk-monitor",
   "homepage": "http://drk.monitor.mn",
   "dependencies": {},
-  "version": "0.0.4",
+  "version": "0.0.35",
   "repository": "https://github.com/perrywoodin/drk-monitor",
   "devDependencies": {
     "grunt": "~0.4.2",

@@ -27,6 +27,10 @@
 	padding-top: 1.0em;
 }
 
+.popover {
+	max-width: 330px;
+}
+
 /* BEGIN - FORM Inputs */
 	textarea, input {
 		outline:none;
