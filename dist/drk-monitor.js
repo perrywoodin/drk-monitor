@@ -1,4 +1,4 @@
-/*! drk-monitor - v0.0.34 - 2014-11-25
+/*! drk-monitor - v0.1.8 - 2014-11-25
  * http://drk.monitor.mn
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 

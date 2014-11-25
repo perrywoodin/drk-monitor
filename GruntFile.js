@@ -205,7 +205,8 @@ module.exports = function (grunt) {
 	grunt.registerTask("default", function(){
 		grunt.log.writeln(grunt.config.get('banner'));
 	});
-	grunt.registerTask('build', ['bump','clean:dist','jshint','html2js','concat','copy','less']);
+	grunt.registerTask('build', ['clean:dist','jshint','html2js','concat','copy','less']);
+	grunt.registerTask('deploy', ['bump','clean:dist','jshint','html2js','concat','copy','less']);
 
 	// Print a timestamp (useful for when watching)
 	grunt.registerTask('timestamp', function() {
