@@ -1,12 +1,14 @@
 {
   "author": "Perry Woodin <perrywoodin@gmail.com>",
   "name": "drk-monitor",
-  "homepage": "",
+  "homepage": "http://drk.monitor.mn",
   "dependencies": {},
-  "repository":"https://github.com/perrywoodin/drk-monitor",
+  "version": "0.0.2",
+  "repository": "https://github.com/perrywoodin/drk-monitor",
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-banner": "~0.2.0",
+    "grunt-bump": "0.0.16",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-connect": "~0.6.0",
