@@ -26,7 +26,7 @@ angular.module('masternode', ['service.masternode'])
 	focusInput();
 
 	$scope.filter = {
-		ipaddress:null,
+		node_key:null,
 		showAll: true
 	};
 
@@ -68,23 +68,27 @@ angular.module('masternode', ['service.masternode'])
 			return true;
 		}
 		
-		if($scope.myMasternodes.indexOf(node.MasternodeIP) !== -1){
+		if($scope.myMasternodes.indexOf(node.MasternodeIP) === -1 || $scope.myMasternodes.indexOf(node.MNPubKey) === -1){
 			return true;
 		}
 		
 	};
 
-	$scope.addToMyList = function(){
-		var ipaddress = $scope.filter['ipaddress'];
-
-		MasternodeService.saveToMyMasterNodes(ipaddress);
-
-		$scope.filter['showAll'] = false;
-		$scope.filter['ipaddress'] = null;
+	$scope.filterMyMasterNodes = function(node){
+		if($scope.myMasternodes.indexOf(node.MasternodeIP) !== -1 || $scope.myMasternodes.indexOf(node.MNPubKey) !== -1){
+			return true;
+		}
 	};
 
-	$scope.removeFromMyList = function(ipaddress){
-		MasternodeService.deleteFromMyMasterNodes(ipaddress);
+	$scope.addToMyList = function(node_key){
+		MasternodeService.saveToMyMasterNodes(node_key);
+
+		$scope.filter['showAll'] = false;
+		$scope.filter['node_key'] = null;
+	};
+
+	$scope.removeFromMyList = function(node_key){
+		MasternodeService.deleteFromMyMasterNodes(node_key);
 	};
 
 	

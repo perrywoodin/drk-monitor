@@ -6,10 +6,10 @@ angular.module('service.masternode',['angular-storage'])
 	var myMasterNodes = [];
 	var MasterNode = {};
 
-	var containsMasterNode = function(ipaddress){
+	var containsMasterNode = function(node_key){
 		var hasNode = false;
 		myMasterNodes.forEach(function(mn){
-			if(mn === ipaddress){
+			if(mn === node_key){
 				hasNode = true;
 				return hasNode;
 			}
@@ -48,17 +48,16 @@ angular.module('service.masternode',['angular-storage'])
 			return deferred.promise;
 		},
 
-		saveToMyMasterNodes: function(ipaddress){
-			
-			// UI may supply a list of IP addresses.
-			// Split the incoming ipaddress on , ; or [space]
-			var myFilter = ipaddress.split(/[ ,;]+/);
+		saveToMyMasterNodes: function(node_key){			
+			// UI may supply a list of node_keys.
+			// Split the incoming node_key on , ; or [space]
+			var myFilter = node_key.split(/[ ,;]+/);
 
 			// Loop through myFilter and add to myMasterNodes
 			// if it doesn't already exist.
-			myFilter.forEach(function(ipaddress){
-				if(!containsMasterNode(ipaddress)){
-					myMasterNodes.push(ipaddress);
+			myFilter.forEach(function(node_key){
+				if(!containsMasterNode(node_key)){
+					myMasterNodes.push(node_key);
 				}
 			});
 
@@ -66,10 +65,10 @@ angular.module('service.masternode',['angular-storage'])
 			store.set('mns',myMasterNodes);
 		},
 
-		deleteFromMyMasterNodes: function(ipaddress){
-			var ipIndex = myMasterNodes.indexOf(ipaddress);
+		deleteFromMyMasterNodes: function(node_key){
+			var nodeIndex = myMasterNodes.indexOf(node_key);
 
-			myMasterNodes.splice(ipIndex,1);
+			myMasterNodes.splice(nodeIndex,1);
 
 			// Put in local storage.
 			store.set('mns',myMasterNodes);

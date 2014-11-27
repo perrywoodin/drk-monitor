@@ -17,49 +17,51 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("mn/masternodes-list.tpl.html",
-    "<div class=\"container row\">\n" +
+    "<div class=\"container\">\n" +
     "\n" +
-    "	<div class=\"col-sm-3\">\n" +
-    "\n" +
-    "		<button class=\"btn btn-default btn-xs\" ng-click=\"toggleFilter()\">\n" +
-    "			<span ng-if=\"!filter.showAll\">Show All</span>\n" +
-    "			<span ng-if=\"filter.showAll\">Filter Mine</span>\n" +
-    "		</button>\n" +
-    "		\n" +
-    "		<h5>My MasterNodes</h5>\n" +
-    "\n" +
-    "\n" +
-    "		<div ng-class=\"{'text-muted':filter.showAll}\" ng-repeat=\"node in myMasternodes\">\n" +
-    "			<a class=\"pull-right\" title=\"Remove {{node}}\" href=\"#\" ng-click=\"removeFromMyList(node)\"><span class=\"glyphicons bin\"></span></a>\n" +
-    "			{{node}}\n" +
-    "		</div>\n" +
-    "	</div>\n" +
-    "\n" +
-    "	<div class=\"col-sm-9\">\n" +
-    "\n" +
-    "		<table class=\"table table-condensed table-hover\">\n" +
+    "	<table class=\"table table-condensed table-hover\">\n" +
     "		<thead>\n" +
     "			<tr>\n" +
     "				<th>IP Address</th>\n" +
     "				<th>Public Key</th>\n" +
-    "				<th>Next Check</th>\n" +
-    "				<th>Last Seen</th>\n" +
+    "				<th class=\"hidden-xs hidden-sm\">Next Check</th>\n" +
+    "				<th class=\"hidden-xs hidden-sm\">Last Seen</th>\n" +
     "				<th>Balance</th>\n" +
     "			</tr>\n" +
-    "		</thead>		\n" +
+    "		</thead>\n" +
+    "\n" +
     "		<tbody>\n" +
+    "			<tr ng-if=\"myMasternodes.length\">\n" +
+    "				<td colspan=\"100%\" class=\"info\">\n" +
+    "					My MasterNodes\n" +
+    "				</td>\n" +
+    "			</tr>\n" +
+    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMyMasterNodes\">\n" +
+    "				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>\n" +
+    "				<td>{{node.MNPubKey}}</td>\n" +
+    "				<td class=\"hidden-xs hidden-sm\">{{node.Portcheck.NextCheck}}</td>\n" +
+    "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
+    "				<td>{{node.Balance.Value | number:5}}</td>\n" +
+    "				<td><button class=\"btn btn-default btn-xs\" ng-click=\"removeFromMyList(node)\"><span class=\"glyphicons circle_remove\" title=\"Remove from My Masternodes\"></span> Remove</button></td>\n" +
+    "			</tr>\n" +
+    "\n" +
+    "			<tr>\n" +
+    "				<td colspan=\"100%\" class=\"info\">\n" +
+    "					All MasterNodes\n" +
+    "				</td>\n" +
+    "			</tr>\n" +
     "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMNs\">\n" +
     "				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>\n" +
-    "				<td><span class=\"glyphicons keys\" popover-placement=\"top\" popover=\"{{node.MNPubKey}}\"></span></td>\n" +
-    "				<td>{{node.Portcheck.NextCheck}}</td>\n" +
-    "				<td>{{node.MNLastSeen}}</td>\n" +
+    "				<td>{{node.MNPubKey}}</td>\n" +
+    "				<td class=\"hidden-xs hidden-sm\">{{node.Portcheck.NextCheck}}</td>\n" +
+    "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
     "				<td>{{node.Balance.Value | number:5}}</td>\n" +
+    "				<td><button class=\"btn btn-default btn-xs\" ng-click=\"addToMyList(node.MNPubKey)\"><span class=\"glyphicons circle_plus\" title=\"Add to My Masternodes\"></span> Add</button></td>\n" +
     "			</tr>\n" +
     "		</tbody>\n" +
     "\n" +
-    "		</table>		\n" +
+    "	</table>	\n" +
     "\n" +
-    "	</div>\n" +
     "</div>\n" +
     "");
 }]);
@@ -88,7 +90,7 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "		<div>\n" +
     "			<div>\n" +
     "				<label>Filter By:</label>\n" +
-    "				<input type=\"text\" placeholder=\"IP Address...\" class=\"quick-input\" ng-model=\"filter.ipaddress\" ng-keypress=\"($event.which === 13)?addToMyList():0\"/>\n" +
+    "				<input type=\"text\" placeholder=\"Public Key or IP Address...\" class=\"quick-input\" ng-model=\"filter.node_key\" ng-keypress=\"($event.which === 13)?addToMyList(filter.node_key):0\"/>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "	</div>\n" +
