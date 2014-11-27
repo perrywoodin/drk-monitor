@@ -1,4 +1,4 @@
-/*! drk-monitor - v0.1.9 - 2014-11-27
+/*! drk-monitor - v0.1.12 - 2014-11-27
  * http://drk.monitor.mn
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 
@@ -138,6 +138,7 @@ angular.module('masternode', ['service.masternode'])
 
 	$scope.filter = {
 		node_key:null,
+		node_search:null,
 		showAll: true
 	};
 
@@ -301,11 +302,11 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "		<tbody>\n" +
     "			<tr ng-if=\"myMasternodes.length\">\n" +
     "				<td colspan=\"100%\" class=\"info\">\n" +
-    "					My MasterNodes\n" +
+    "					<span class=\"glyphicons server\"></span> <strong>My MasterNodes</strong>\n" +
     "				</td>\n" +
     "			</tr>\n" +
     "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMyMasterNodes\">\n" +
-    "				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>\n" +
+    "				<td>{{node.MasternodeIP}}</td>\n" +
     "				<td>{{node.MNPubKey}}</td>\n" +
     "				<td class=\"hidden-xs hidden-sm\">{{node.Portcheck.NextCheck}}</td>\n" +
     "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
@@ -314,12 +315,21 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "			</tr>\n" +
     "\n" +
     "			<tr>\n" +
+    "				<td colspan=\"100%\"></td>\n" +
+    "			</tr>			\n" +
+    "\n" +
+    "			<tr>\n" +
     "				<td colspan=\"100%\" class=\"info\">\n" +
-    "					All MasterNodes\n" +
+    "					<span class=\"glyphicons server\"></span> <strong>All MasterNodes </strong>\n" +
     "				</td>\n" +
     "			</tr>\n" +
-    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMNs\">\n" +
-    "				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>\n" +
+    "			<tr>\n" +
+    "				<td colspan=\"100%\" class=\"active\">\n" +
+    "					<input type=\"text\" class=\"form-control input-sm\" placeholder=\"Search MasterNodes...\" ng-model=\"filter.node_search\">\n" +
+    "				</td>\n" +
+    "			</tr>\n" +
+    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMNs | filter: filter.node_search\">\n" +
+    "				<td>{{node.MasternodeIP}}</td>\n" +
     "				<td>{{node.MNPubKey}}</td>\n" +
     "				<td class=\"hidden-xs hidden-sm\">{{node.Portcheck.NextCheck}}</td>\n" +
     "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
@@ -357,7 +367,7 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "	<div class=\"jumbotron-input\">\n" +
     "		<div>\n" +
     "			<div>\n" +
-    "				<label>Filter By:</label>\n" +
+    "				<label>Add to My MasterNodes By:</label>\n" +
     "				<input type=\"text\" placeholder=\"Public Key or IP Address...\" class=\"quick-input\" ng-model=\"filter.node_key\" ng-keypress=\"($event.which === 13)?addToMyList(filter.node_key):0\"/>\n" +
     "			</div>\n" +
     "		</div>\n" +

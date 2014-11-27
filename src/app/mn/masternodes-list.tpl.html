@@ -14,11 +14,11 @@
 		<tbody>
 			<tr ng-if="myMasternodes.length">
 				<td colspan="100%" class="info">
-					My MasterNodes
+					<span class="glyphicons server"></span> <strong>My MasterNodes</strong>
 				</td>
 			</tr>
 			<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in masternodes | filter: filterMyMasterNodes">
-				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>
+				<td>{{node.MasternodeIP}}</td>
 				<td>{{node.MNPubKey}}</td>
 				<td class="hidden-xs hidden-sm">{{node.Portcheck.NextCheck}}</td>
 				<td class="hidden-xs hidden-sm">{{node.MNLastSeen}}</td>
@@ -27,12 +27,21 @@
 			</tr>
 
 			<tr>
+				<td colspan="100%"></td>
+			</tr>			
+
+			<tr>
 				<td colspan="100%" class="info">
-					All MasterNodes
+					<span class="glyphicons server"></span> <strong>All MasterNodes </strong>
 				</td>
 			</tr>
-			<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in masternodes | filter: filterMNs">
-				<td>{{node.MasternodeIP}}:{{node.MasternodePort}}</td>
+			<tr>
+				<td colspan="100%" class="active">
+					<input type="text" class="form-control input-sm" placeholder="Search MasterNodes..." ng-model="filter.node_search">
+				</td>
+			</tr>
+			<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in masternodes | filter: filterMNs | filter: filter.node_search">
+				<td>{{node.MasternodeIP}}</td>
 				<td>{{node.MNPubKey}}</td>
 				<td class="hidden-xs hidden-sm">{{node.Portcheck.NextCheck}}</td>
 				<td class="hidden-xs hidden-sm">{{node.MNLastSeen}}</td>

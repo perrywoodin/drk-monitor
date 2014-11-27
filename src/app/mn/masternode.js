@@ -27,6 +27,7 @@ angular.module('masternode', ['service.masternode'])
 
 	$scope.filter = {
 		node_key:null,
+		node_search:null,
 		showAll: true
 	};
 
