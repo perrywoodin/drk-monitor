@@ -1,5 +1,10 @@
 <div class="container">
 
+	<div class="alert alert-info" role="alert">
+		<span class="pull-right">({{myMasternodes.length}} of {{masternodes.length | number}} total MNs)</span>
+		<span class="glyphicons server"></span> <strong>My MasterNodes</strong>
+	</div>
+
 	<table class="table table-condensed table-hover">
 		<thead>
 			<tr>
@@ -7,49 +12,28 @@
 				<th>Public Key</th>
 				<th class="hidden-xs hidden-sm">Next Check</th>
 				<th class="hidden-xs hidden-sm">Last Seen</th>
-				<th>Balance</th>
+				<th>Received</th>
+				<th></th>
 			</tr>
 		</thead>
 
 		<tbody>
-			<tr ng-if="myMasternodes.length">
-				<td colspan="100%" class="info">
-					<span class="glyphicons server"></span> <strong>My MasterNodes</strong>
-				</td>
-			</tr>
-			<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in masternodes | filter: filterMyMasterNodes">
+			<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in myMasternodes">
 				<td>{{node.MasternodeIP}}</td>
-				<td>{{node.MNPubKey}}</td>
+				<td>{{node.MNPubKey}}
+					<span class="glyphicons circle_info" ng-if="node.Portcheck.Result !== 'open'" popover-placement="top" popover="{{node.Portcheck.ErrorMessage}}"></span></td>
 				<td class="hidden-xs hidden-sm">{{node.Portcheck.NextCheck}}</td>
 				<td class="hidden-xs hidden-sm">{{node.MNLastSeen}}</td>
 				<td>{{node.Balance.Value | number:5}}</td>
 				<td><button class="btn btn-default btn-xs" ng-click="removeFromMyList(node)"><span class="glyphicons circle_remove" title="Remove from My Masternodes"></span> Remove</button></td>
 			</tr>
 
-			<tr>
-				<td colspan="100%"></td>
-			</tr>			
-
-			<tr>
-				<td colspan="100%" class="info">
-					<span class="glyphicons server"></span> <strong>All MasterNodes </strong>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="100%" class="active">
-					<input type="text" class="form-control input-sm" placeholder="Search MasterNodes..." ng-model="filter.node_search">
-				</td>
-			</tr>
-			<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in masternodes | filter: filterMNs | filter: filter.node_search">
-				<td>{{node.MasternodeIP}}</td>
-				<td>{{node.MNPubKey}}</td>
-				<td class="hidden-xs hidden-sm">{{node.Portcheck.NextCheck}}</td>
-				<td class="hidden-xs hidden-sm">{{node.MNLastSeen}}</td>
-				<td>{{node.Balance.Value | number:5}}</td>
-				<td><button class="btn btn-default btn-xs" ng-click="addToMyList(node.MNPubKey)"><span class="glyphicons circle_plus" title="Add to My Masternodes"></span> Add</button></td>
-			</tr>
 		</tbody>
 
 	</table>	
+
+	<div>
+		<button type="button" class="btn btn-primary" ng-click="showMasternodeSearchModal()">Search MasterNodes</button>
+	</div>
 
 </div>

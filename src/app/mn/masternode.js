@@ -27,22 +27,20 @@ angular.module('masternode', ['service.masternode'])
 
 	$scope.filter = {
 		node_key:null,
-		node_search:null,
-		showAll: true
+		node_search:null
 	};
 
-	MasternodeService.getMyMasterNodes().then(function(response){
-		// If My Masternodes is populated, 
-		// default to showing only my nodes.
-		if(response.length){
-			$scope.filter['showAll'] = false;
-		}
-		$scope.myMasternodes = response;
-	});
-
+	// Get all masternodes
 	var getMasterNodes = function(){
 		return MasternodeService.getMasterNodes().then(function(response){
 			$scope.masternodes = response;
+		});
+	};
+
+	// Get masternodes that have been saved to local storage.
+	var getMyMasterNodes = function(){
+		MasternodeService.getMyMasterNodes().then(function(response){
+			$scope.myMasternodes = response;
 		});
 	};
 
@@ -55,14 +53,11 @@ angular.module('masternode', ['service.masternode'])
 
 	var loadMasterNodes = function(){
 		getMasterNodes()
+			.then(getMyMasterNodes)
 			.then(reloadMasterNodes);
 	};
 
 	loadMasterNodes();
-
-	$scope.toggleFilter = function(){
-		$scope.filter['showAll'] = !$scope.filter['showAll'];
-	};
 
 	$scope.filterMNs = function(node){
 		if($scope.filter.showAll){
@@ -75,24 +70,68 @@ angular.module('masternode', ['service.masternode'])
 		
 	};
 
-	$scope.filterMyMasterNodes = function(node){
-		if($scope.myMasternodes.indexOf(node.MasternodeIP) !== -1 || $scope.myMasternodes.indexOf(node.MNPubKey) !== -1){
-			return true;
-		}
-	};
-
 	$scope.addToMyList = function(node_key){
 		MasternodeService.saveToMyMasterNodes(node_key);
-
-		$scope.filter['showAll'] = false;
+		getMyMasterNodes();
 		$scope.filter['node_key'] = null;
 	};
 
-	$scope.removeFromMyList = function(node_key){
-		MasternodeService.deleteFromMyMasterNodes(node_key);
+	$scope.removeFromMyList = function(node){
+		// For the time being, support IP Address or PubKey.
+		// In the future, only the PubKey will be supported.
+		MasternodeService.deleteFromMyMasterNodes(node.MasternodeIP);
+		MasternodeService.deleteFromMyMasterNodes(node.MNPubKey);
+		getMyMasterNodes();
+	};
+
+
+	// !!!!!!!!!!!!!!!!!!!! 
+	// MasternodeSearch Modal
+	// !!!!!!!!!!!!!!!!!!!! 
+	var masternodeSearchModalOpen = false;
+	var masternodeSearchModal = function(){
+		if(!masternodeSearchModalOpen){
+			masternodeSearchModalOpen = true;
+			$scope.modalInstance = $modal.open({
+				templateUrl: 'mn/masternodesSearch-modal.tpl.html',
+				controller: 'MasternodeSearchModalCtrl',
+				resolve:{
+					masternodes: function(){
+						return $scope.masternodes;
+					}
+				}
+			}); 
+			
+			$scope.modalInstance.result.then(function() {
+				masternodeSearchModalOpen = false;
+			}, function() {
+				// cancelled
+			})['finally'](function(){
+				// unset modalInstance to prevent double close of modal when $routeChangeStart
+				$scope.modalInstance = undefined;
+				getMyMasterNodes();
+			});
+		}
+	};
+
+	$scope.showMasternodeSearchModal = function(){
+		masternodeSearchModal();
 	};
 
 	
 }])
 
+.controller('MasternodeSearchModalCtrl', ['$scope', '$modalInstance', '$timeout', 'masternodes', 'MasternodeService', function ($scope, $modalInstance, $timeout, masternodes, MasternodeService) {
+	
+	$scope.masternodes = masternodes;
+
+	$scope.cancel = function(){
+		$modalInstance.close();	
+	};
+
+	$scope.addToMyList = function(node_key){
+		MasternodeService.saveToMyMasterNodes(node_key);
+	};
+
+}])
 ;

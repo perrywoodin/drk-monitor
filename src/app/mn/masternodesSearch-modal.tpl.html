@@ -1,0 +1,35 @@
+<div class="modal-header">
+	<h3 class="modal-title">All MasterNodes</h3>
+</div>
+<div class="modal-body">
+
+	<input type="text" class="form-control input-sm" placeholder="Filter MasterNodes..." ng-model="filter.node_search">
+
+	<table class="table table-condensed table-hover">
+	<thead>
+		<tr>
+			<th>IP Address</th>
+			<th>Public Key</th>
+			<th>Received</th>
+			<th></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr ng-class="{danger:node.Portcheck.Result !== 'open'}" ng-repeat="node in (filteredNodes = (masternodes | filter: filter.node_search) | limitTo:10)">
+			<td>{{node.MasternodeIP}}</td>
+			<td>{{node.MNPubKey}}</td>
+			<td>{{node.Balance.Value | number:5}}</td>
+			<td><button class="btn btn-default btn-xs" ng-click="addToMyList(node.MNPubKey)"><span class="glyphicons circle_plus" title="Add to My Masternodes"></span> Add</button></td>
+		</tr>
+	</tbody>
+	</table>	
+
+	<div>
+		Showing maximum 10 of {{masternodes.length | number}}. Use the Filter input above to find you node.
+	</div>
+
+</div>
+<div class="modal-footer">
+	<button class="btn btn-default" ng-click="Close()">Cancel</button>
+</div>

@@ -1,4 +1,4 @@
-/*! drk-monitor - v0.1.12 - 2014-11-27
+/*! drk-monitor - v0.1.12 - 2014-11-30
  * http://drk.monitor.mn
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 
@@ -33,13 +33,18 @@ angular.module('service.masternode',['angular-storage'])
 
 .factory('MasternodeService', ['$http', '$log', '$q', 'store', 'DateTimeService', function ($http, $log, $q, store, DateTimeService) {
 
+	// Array of all masternodes
 	var MasterNodes = [];
+	// Detailed array of my masternodes
 	var myMasterNodes = [];
+	// Array of my masternode key
+	var storeMasterNodeKeys = [];
+
 	var MasterNode = {};
 
 	var containsMasterNode = function(node_key){
 		var hasNode = false;
-		myMasterNodes.forEach(function(mn){
+		storeMasterNodeKeys.forEach(function(mn){
 			if(mn === node_key){
 				hasNode = true;
 				return hasNode;
@@ -50,8 +55,11 @@ angular.module('service.masternode',['angular-storage'])
 	
 	var Service = {
 		
+		// Get all the Masternodes from an API
 		getMasterNodes: function(){
-			//json/masternodes.json
+			// curl -o masternodes.json https://drk.mn/api/masternodes?balance=1&portcheck=1
+			// json/masternodes.json
+			// https://drk.mn/api/masternodes?balance=1&portcheck=1 
 			var request = $http.get('https://drk.mn/api/masternodes?balance=1&portcheck=1');
 			return request.then(function(response){
 				MasterNodes = response.data.data;
@@ -60,18 +68,29 @@ angular.module('service.masternode',['angular-storage'])
 					node.MNLastSeen = DateTimeService.deltaTimeStampHR(node.MNLastSeen,DateTimeService.currenttimestamp());
 
 					node.Portcheck.NextCheck = DateTimeService.deltaTimeStampHR(node.Portcheck.NextCheck,DateTimeService.currenttimestamp());
+
+					node.Balance.Value = node.Balance.Value - 1000;
 				});
 
 				return MasterNodes;
 			});
 		},
 
+		// Get a subset of all the masternodes.
 		getMyMasterNodes: function(){
-			var storedMasternodes = store.get('mns');
+			var localStoreageMasterNodes = store.get('mns');
 			
-			if(storedMasternodes){
-				myMasterNodes = storedMasternodes;
+			if(localStoreageMasterNodes){
+				storeMasterNodeKeys = localStoreageMasterNodes;
 			}
+
+			myMasterNodes = [];
+
+			MasterNodes.forEach(function(node){
+				if(storeMasterNodeKeys.indexOf(node.MasternodeIP) !== -1 || storeMasterNodeKeys.indexOf(node.MNPubKey) !== -1){
+					myMasterNodes.push(node);
+				}
+			});
 			
 			var deferred = $q.defer();
 			deferred.resolve(myMasterNodes);
@@ -79,6 +98,7 @@ angular.module('service.masternode',['angular-storage'])
 			return deferred.promise;
 		},
 
+		// Save a masternode key to local storage.
 		saveToMyMasterNodes: function(node_key){			
 			// UI may supply a list of node_keys.
 			// Split the incoming node_key on , ; or [space]
@@ -88,21 +108,24 @@ angular.module('service.masternode',['angular-storage'])
 			// if it doesn't already exist.
 			myFilter.forEach(function(node_key){
 				if(!containsMasterNode(node_key)){
-					myMasterNodes.push(node_key);
+					storeMasterNodeKeys.push(node_key);
 				}
 			});
 
 			// Put in local storage.
-			store.set('mns',myMasterNodes);
+			store.set('mns',storeMasterNodeKeys);
 		},
 
+		// Remove a masternode key from local storage.
 		deleteFromMyMasterNodes: function(node_key){
-			var nodeIndex = myMasterNodes.indexOf(node_key);
+			var nodeIndex = storeMasterNodeKeys.indexOf(node_key);
 
-			myMasterNodes.splice(nodeIndex,1);
+			if(nodeIndex !== -1){
+				storeMasterNodeKeys.splice(nodeIndex,1);
 
-			// Put in local storage.
-			store.set('mns',myMasterNodes);
+				// Put in local storage.
+				store.set('mns',storeMasterNodeKeys);
+			}
 		}
 
 	};
@@ -138,22 +161,20 @@ angular.module('masternode', ['service.masternode'])
 
 	$scope.filter = {
 		node_key:null,
-		node_search:null,
-		showAll: true
+		node_search:null
 	};
 
-	MasternodeService.getMyMasterNodes().then(function(response){
-		// If My Masternodes is populated, 
-		// default to showing only my nodes.
-		if(response.length){
-			$scope.filter['showAll'] = false;
-		}
-		$scope.myMasternodes = response;
-	});
-
+	// Get all masternodes
 	var getMasterNodes = function(){
 		return MasternodeService.getMasterNodes().then(function(response){
 			$scope.masternodes = response;
+		});
+	};
+
+	// Get masternodes that have been saved to local storage.
+	var getMyMasterNodes = function(){
+		MasternodeService.getMyMasterNodes().then(function(response){
+			$scope.myMasternodes = response;
 		});
 	};
 
@@ -166,14 +187,11 @@ angular.module('masternode', ['service.masternode'])
 
 	var loadMasterNodes = function(){
 		getMasterNodes()
+			.then(getMyMasterNodes)
 			.then(reloadMasterNodes);
 	};
 
 	loadMasterNodes();
-
-	$scope.toggleFilter = function(){
-		$scope.filter['showAll'] = !$scope.filter['showAll'];
-	};
 
 	$scope.filterMNs = function(node){
 		if($scope.filter.showAll){
@@ -186,26 +204,70 @@ angular.module('masternode', ['service.masternode'])
 		
 	};
 
-	$scope.filterMyMasterNodes = function(node){
-		if($scope.myMasternodes.indexOf(node.MasternodeIP) !== -1 || $scope.myMasternodes.indexOf(node.MNPubKey) !== -1){
-			return true;
-		}
-	};
-
 	$scope.addToMyList = function(node_key){
 		MasternodeService.saveToMyMasterNodes(node_key);
-
-		$scope.filter['showAll'] = false;
+		getMyMasterNodes();
 		$scope.filter['node_key'] = null;
 	};
 
-	$scope.removeFromMyList = function(node_key){
-		MasternodeService.deleteFromMyMasterNodes(node_key);
+	$scope.removeFromMyList = function(node){
+		// For the time being, support IP Address or PubKey.
+		// In the future, only the PubKey will be supported.
+		MasternodeService.deleteFromMyMasterNodes(node.MasternodeIP);
+		MasternodeService.deleteFromMyMasterNodes(node.MNPubKey);
+		getMyMasterNodes();
+	};
+
+
+	// !!!!!!!!!!!!!!!!!!!! 
+	// MasternodeSearch Modal
+	// !!!!!!!!!!!!!!!!!!!! 
+	var masternodeSearchModalOpen = false;
+	var masternodeSearchModal = function(){
+		if(!masternodeSearchModalOpen){
+			masternodeSearchModalOpen = true;
+			$scope.modalInstance = $modal.open({
+				templateUrl: 'mn/masternodesSearch-modal.tpl.html',
+				controller: 'MasternodeSearchModalCtrl',
+				resolve:{
+					masternodes: function(){
+						return $scope.masternodes;
+					}
+				}
+			}); 
+			
+			$scope.modalInstance.result.then(function() {
+				masternodeSearchModalOpen = false;
+			}, function() {
+				// cancelled
+			})['finally'](function(){
+				// unset modalInstance to prevent double close of modal when $routeChangeStart
+				$scope.modalInstance = undefined;
+				getMyMasterNodes();
+			});
+		}
+	};
+
+	$scope.showMasternodeSearchModal = function(){
+		masternodeSearchModal();
 	};
 
 	
 }])
 
+.controller('MasternodeSearchModalCtrl', ['$scope', '$modalInstance', '$timeout', 'masternodes', 'MasternodeService', function ($scope, $modalInstance, $timeout, masternodes, MasternodeService) {
+	
+	$scope.masternodes = masternodes;
+
+	$scope.cancel = function(){
+		$modalInstance.close();	
+	};
+
+	$scope.addToMyList = function(node_key){
+		MasternodeService.saveToMyMasterNodes(node_key);
+	};
+
+}])
 ;
 angular.module('directives', []);
 
@@ -267,7 +329,7 @@ function parallax(){
 $(window).scroll(function(e){
     parallax();
 });
-angular.module('templates.app', ['header.tpl.html', 'mn/masternodes-list.tpl.html', 'mn/masternodes.tpl.html']);
+angular.module('templates.app', ['header.tpl.html', 'mn/masternodes-list.tpl.html', 'mn/masternodes.tpl.html', 'mn/masternodesSearch-modal.tpl.html']);
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
@@ -288,6 +350,11 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
   $templateCache.put("mn/masternodes-list.tpl.html",
     "<div class=\"container\">\n" +
     "\n" +
+    "	<div class=\"alert alert-info\" role=\"alert\">\n" +
+    "		<span class=\"pull-right\">({{myMasternodes.length}} of {{masternodes.length | number}} total MNs)</span>\n" +
+    "		<span class=\"glyphicons server\"></span> <strong>My MasterNodes</strong>\n" +
+    "	</div>\n" +
+    "\n" +
     "	<table class=\"table table-condensed table-hover\">\n" +
     "		<thead>\n" +
     "			<tr>\n" +
@@ -295,50 +362,29 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "				<th>Public Key</th>\n" +
     "				<th class=\"hidden-xs hidden-sm\">Next Check</th>\n" +
     "				<th class=\"hidden-xs hidden-sm\">Last Seen</th>\n" +
-    "				<th>Balance</th>\n" +
+    "				<th>Received</th>\n" +
+    "				<th></th>\n" +
     "			</tr>\n" +
     "		</thead>\n" +
     "\n" +
     "		<tbody>\n" +
-    "			<tr ng-if=\"myMasternodes.length\">\n" +
-    "				<td colspan=\"100%\" class=\"info\">\n" +
-    "					<span class=\"glyphicons server\"></span> <strong>My MasterNodes</strong>\n" +
-    "				</td>\n" +
-    "			</tr>\n" +
-    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMyMasterNodes\">\n" +
+    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in myMasternodes\">\n" +
     "				<td>{{node.MasternodeIP}}</td>\n" +
-    "				<td>{{node.MNPubKey}}</td>\n" +
+    "				<td>{{node.MNPubKey}}\n" +
+    "					<span class=\"glyphicons circle_info\" ng-if=\"node.Portcheck.Result !== 'open'\" popover-placement=\"top\" popover=\"{{node.Portcheck.ErrorMessage}}\"></span></td>\n" +
     "				<td class=\"hidden-xs hidden-sm\">{{node.Portcheck.NextCheck}}</td>\n" +
     "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
     "				<td>{{node.Balance.Value | number:5}}</td>\n" +
     "				<td><button class=\"btn btn-default btn-xs\" ng-click=\"removeFromMyList(node)\"><span class=\"glyphicons circle_remove\" title=\"Remove from My Masternodes\"></span> Remove</button></td>\n" +
     "			</tr>\n" +
     "\n" +
-    "			<tr>\n" +
-    "				<td colspan=\"100%\"></td>\n" +
-    "			</tr>			\n" +
-    "\n" +
-    "			<tr>\n" +
-    "				<td colspan=\"100%\" class=\"info\">\n" +
-    "					<span class=\"glyphicons server\"></span> <strong>All MasterNodes </strong>\n" +
-    "				</td>\n" +
-    "			</tr>\n" +
-    "			<tr>\n" +
-    "				<td colspan=\"100%\" class=\"active\">\n" +
-    "					<input type=\"text\" class=\"form-control input-sm\" placeholder=\"Search MasterNodes...\" ng-model=\"filter.node_search\">\n" +
-    "				</td>\n" +
-    "			</tr>\n" +
-    "			<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in masternodes | filter: filterMNs | filter: filter.node_search\">\n" +
-    "				<td>{{node.MasternodeIP}}</td>\n" +
-    "				<td>{{node.MNPubKey}}</td>\n" +
-    "				<td class=\"hidden-xs hidden-sm\">{{node.Portcheck.NextCheck}}</td>\n" +
-    "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
-    "				<td>{{node.Balance.Value | number:5}}</td>\n" +
-    "				<td><button class=\"btn btn-default btn-xs\" ng-click=\"addToMyList(node.MNPubKey)\"><span class=\"glyphicons circle_plus\" title=\"Add to My Masternodes\"></span> Add</button></td>\n" +
-    "			</tr>\n" +
     "		</tbody>\n" +
     "\n" +
     "	</table>	\n" +
+    "\n" +
+    "	<div>\n" +
+    "		<button type=\"button\" class=\"btn btn-primary\" ng-click=\"showMasternodeSearchModal()\">Search MasterNodes</button>\n" +
+    "	</div>\n" +
     "\n" +
     "</div>\n" +
     "");
@@ -367,14 +413,53 @@ angular.module("mn/masternodes.tpl.html", []).run(["$templateCache", function($t
     "	<div class=\"jumbotron-input\">\n" +
     "		<div>\n" +
     "			<div>\n" +
-    "				<label>Add to My MasterNodes By:</label>\n" +
-    "				<input type=\"text\" placeholder=\"Public Key or IP Address...\" class=\"quick-input\" ng-model=\"filter.node_key\" ng-keypress=\"($event.which === 13)?addToMyList(filter.node_key):0\"/>\n" +
+    "				<label>Monitor By:</label>\n" +
+    "				<input type=\"text\" placeholder=\"Public Key...\" class=\"quick-input\" ng-model=\"filter.node_key\" ng-keypress=\"($event.which === 13)?addToMyList(filter.node_key):0\"/>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "	</div>\n" +
     "</div>\n" +
     "\n" +
     "<div ui-view></div>");
+}]);
+
+angular.module("mn/masternodesSearch-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("mn/masternodesSearch-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "	<h3 class=\"modal-title\">All MasterNodes</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "\n" +
+    "	<input type=\"text\" class=\"form-control input-sm\" placeholder=\"Filter MasterNodes...\" ng-model=\"filter.node_search\">\n" +
+    "\n" +
+    "	<table class=\"table table-condensed table-hover\">\n" +
+    "	<thead>\n" +
+    "		<tr>\n" +
+    "			<th>IP Address</th>\n" +
+    "			<th>Public Key</th>\n" +
+    "			<th>Received</th>\n" +
+    "			<th></th>\n" +
+    "		</tr>\n" +
+    "	</thead>\n" +
+    "\n" +
+    "	<tbody>\n" +
+    "		<tr ng-class=\"{danger:node.Portcheck.Result !== 'open'}\" ng-repeat=\"node in (filteredNodes = (masternodes | filter: filter.node_search) | limitTo:10)\">\n" +
+    "			<td>{{node.MasternodeIP}}</td>\n" +
+    "			<td>{{node.MNPubKey}}</td>\n" +
+    "			<td>{{node.Balance.Value | number:5}}</td>\n" +
+    "			<td><button class=\"btn btn-default btn-xs\" ng-click=\"addToMyList(node.MNPubKey)\"><span class=\"glyphicons circle_plus\" title=\"Add to My Masternodes\"></span> Add</button></td>\n" +
+    "		</tr>\n" +
+    "	</tbody>\n" +
+    "	</table>	\n" +
+    "\n" +
+    "	<div>\n" +
+    "		Showing maximum 10 of {{masternodes.length | number}}. Use the Filter input above to find you node.\n" +
+    "	</div>\n" +
+    "\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "	<button class=\"btn btn-default\" ng-click=\"Close()\">Cancel</button>\n" +
+    "</div>");
 }]);
 
 angular.module('templates.common', []);
