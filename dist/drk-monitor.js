@@ -1,4 +1,4 @@
-/*! drk-monitor - v0.1.12 - 2014-11-30
+/*! drk-monitor - v0.1.13 - 2014-11-30
  * http://drk.monitor.mn
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 
@@ -453,12 +453,12 @@ angular.module("mn/masternodesSearch-modal.tpl.html", []).run(["$templateCache",
     "	</table>	\n" +
     "\n" +
     "	<div>\n" +
-    "		Showing maximum 10 of {{masternodes.length | number}}. Use the Filter input above to find you node.\n" +
+    "		Showing maximum 10 of {{masternodes.length | number}}. Use the Filter input above to find your node.\n" +
     "	</div>\n" +
     "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "	<button class=\"btn btn-default\" ng-click=\"Close()\">Cancel</button>\n" +
+    "	<button class=\"btn btn-default\" ng-click=\"cancel()\">Close</button>\n" +
     "</div>");
 }]);
 

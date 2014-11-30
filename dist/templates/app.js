@@ -122,11 +122,11 @@ angular.module("mn/masternodesSearch-modal.tpl.html", []).run(["$templateCache",
     "	</table>	\n" +
     "\n" +
     "	<div>\n" +
-    "		Showing maximum 10 of {{masternodes.length | number}}. Use the Filter input above to find you node.\n" +
+    "		Showing maximum 10 of {{masternodes.length | number}}. Use the Filter input above to find your node.\n" +
     "	</div>\n" +
     "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "	<button class=\"btn btn-default\" ng-click=\"Close()\">Cancel</button>\n" +
+    "	<button class=\"btn btn-default\" ng-click=\"cancel()\">Close</button>\n" +
     "</div>");
 }]);
