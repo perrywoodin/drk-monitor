@@ -1,4 +1,4 @@
-/*! drk-monitor - v0.1.13 - 2014-11-30
+/*! drk-monitor - v0.1.15 - 2014-12-01
  * http://drk.monitor.mn
  * Copyright (c) 2014 Perry Woodin <perrywoodin@gmail.com>;
  * Licensed 
@@ -59,7 +59,7 @@ angular.module('service.masternode',['angular-storage'])
 		getMasterNodes: function(){
 			// curl -o masternodes.json https://drk.mn/api/masternodes?balance=1&portcheck=1
 			// json/masternodes.json
-			// https://drk.mn/api/masternodes?balance=1&portcheck=1 
+			// https://drk.mn/api/masternodes?balance=1&portcheck=1
 			var request = $http.get('https://drk.mn/api/masternodes?balance=1&portcheck=1');
 			return request.then(function(response){
 				MasterNodes = response.data.data;
@@ -96,6 +96,20 @@ angular.module('service.masternode',['angular-storage'])
 			deferred.resolve(myMasterNodes);
 
 			return deferred.promise;
+		},
+
+		getMyMasterNodesBalanceTotal: function(){
+			var totalBalance = 0;
+			var balance = [];
+			myMasterNodes.forEach(function(node){
+				balance.push(node.Balance.Value);
+			});
+			
+			totalBalance = balance.reduce(function(a,b){
+				return a + b;
+			});
+
+			return totalBalance;
 		},
 
 		// Save a masternode key to local storage.
@@ -175,6 +189,7 @@ angular.module('masternode', ['service.masternode'])
 	var getMyMasterNodes = function(){
 		MasternodeService.getMyMasterNodes().then(function(response){
 			$scope.myMasternodes = response;
+			$scope.balanceTotal = MasternodeService.getMyMasterNodesBalanceTotal();
 		});
 	};
 
@@ -252,10 +267,15 @@ angular.module('masternode', ['service.masternode'])
 		masternodeSearchModal();
 	};
 
+	// Listen for addToMyList which may come from the Modal
+	$scope.$on('addToMyList',function(event,node_key){
+		$scope.addToMyList(node_key);
+	});
+
 	
 }])
 
-.controller('MasternodeSearchModalCtrl', ['$scope', '$modalInstance', '$timeout', 'masternodes', 'MasternodeService', function ($scope, $modalInstance, $timeout, masternodes, MasternodeService) {
+.controller('MasternodeSearchModalCtrl', ['$rootScope', '$scope', '$modalInstance', '$timeout', 'masternodes', 'MasternodeService', function ($rootScope, $scope, $modalInstance, $timeout, masternodes, MasternodeService) {
 	
 	$scope.masternodes = masternodes;
 
@@ -264,7 +284,7 @@ angular.module('masternode', ['service.masternode'])
 	};
 
 	$scope.addToMyList = function(node_key){
-		MasternodeService.saveToMyMasterNodes(node_key);
+		$rootScope.$broadcast('addToMyList',node_key);
 	};
 
 }])
@@ -355,7 +375,7 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "		<span class=\"glyphicons server\"></span> <strong>My MasterNodes</strong>\n" +
     "	</div>\n" +
     "\n" +
-    "	<table class=\"table table-condensed table-hover\">\n" +
+    "	<table class=\"table table-condensed table-hover\" ng-if=\"myMasternodes.length\">\n" +
     "		<thead>\n" +
     "			<tr>\n" +
     "				<th>IP Address</th>\n" +
@@ -376,6 +396,14 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
     "				<td>{{node.Balance.Value | number:5}}</td>\n" +
     "				<td><button class=\"btn btn-default btn-xs\" ng-click=\"removeFromMyList(node)\"><span class=\"glyphicons circle_remove\" title=\"Remove from My Masternodes\"></span> Remove</button></td>\n" +
+    "			</tr>\n" +
+    "			<tr class=\"success\" ng-if=\"myMasternodes.length > 1\">\n" +
+    "				<td></td>\n" +
+    "				<td></td>\n" +
+    "				<td class=\"hidden-xs\"></td>\n" +
+    "				<td class=\"hidden-xs\"></td>\n" +
+    "				<td><strong>{{balanceTotal | number:5}}</strong></td>\n" +
+    "				<td></td>\n" +
     "			</tr>\n" +
     "\n" +
     "		</tbody>\n" +

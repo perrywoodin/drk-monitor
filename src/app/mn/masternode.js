@@ -41,6 +41,7 @@ angular.module('masternode', ['service.masternode'])
 	var getMyMasterNodes = function(){
 		MasternodeService.getMyMasterNodes().then(function(response){
 			$scope.myMasternodes = response;
+			$scope.balanceTotal = MasternodeService.getMyMasterNodesBalanceTotal();
 		});
 	};
 
@@ -118,10 +119,15 @@ angular.module('masternode', ['service.masternode'])
 		masternodeSearchModal();
 	};
 
+	// Listen for addToMyList which may come from the Modal
+	$scope.$on('addToMyList',function(event,node_key){
+		$scope.addToMyList(node_key);
+	});
+
 	
 }])
 
-.controller('MasternodeSearchModalCtrl', ['$scope', '$modalInstance', '$timeout', 'masternodes', 'MasternodeService', function ($scope, $modalInstance, $timeout, masternodes, MasternodeService) {
+.controller('MasternodeSearchModalCtrl', ['$rootScope', '$scope', '$modalInstance', '$timeout', 'masternodes', 'MasternodeService', function ($rootScope, $scope, $modalInstance, $timeout, masternodes, MasternodeService) {
 	
 	$scope.masternodes = masternodes;
 
@@ -130,7 +136,7 @@ angular.module('masternode', ['service.masternode'])
 	};
 
 	$scope.addToMyList = function(node_key){
-		MasternodeService.saveToMyMasterNodes(node_key);
+		$rootScope.$broadcast('addToMyList',node_key);
 	};
 
 }])

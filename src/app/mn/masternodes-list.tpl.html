@@ -5,7 +5,7 @@
 		<span class="glyphicons server"></span> <strong>My MasterNodes</strong>
 	</div>
 
-	<table class="table table-condensed table-hover">
+	<table class="table table-condensed table-hover" ng-if="myMasternodes.length">
 		<thead>
 			<tr>
 				<th>IP Address</th>
@@ -26,6 +26,14 @@
 				<td class="hidden-xs hidden-sm">{{node.MNLastSeen}}</td>
 				<td>{{node.Balance.Value | number:5}}</td>
 				<td><button class="btn btn-default btn-xs" ng-click="removeFromMyList(node)"><span class="glyphicons circle_remove" title="Remove from My Masternodes"></span> Remove</button></td>
+			</tr>
+			<tr class="success" ng-if="myMasternodes.length > 1">
+				<td></td>
+				<td></td>
+				<td class="hidden-xs"></td>
+				<td class="hidden-xs"></td>
+				<td><strong>{{balanceTotal | number:5}}</strong></td>
+				<td></td>
 			</tr>
 
 		</tbody>

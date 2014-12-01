@@ -24,7 +24,7 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "		<span class=\"glyphicons server\"></span> <strong>My MasterNodes</strong>\n" +
     "	</div>\n" +
     "\n" +
-    "	<table class=\"table table-condensed table-hover\">\n" +
+    "	<table class=\"table table-condensed table-hover\" ng-if=\"myMasternodes.length\">\n" +
     "		<thead>\n" +
     "			<tr>\n" +
     "				<th>IP Address</th>\n" +
@@ -45,6 +45,14 @@ angular.module("mn/masternodes-list.tpl.html", []).run(["$templateCache", functi
     "				<td class=\"hidden-xs hidden-sm\">{{node.MNLastSeen}}</td>\n" +
     "				<td>{{node.Balance.Value | number:5}}</td>\n" +
     "				<td><button class=\"btn btn-default btn-xs\" ng-click=\"removeFromMyList(node)\"><span class=\"glyphicons circle_remove\" title=\"Remove from My Masternodes\"></span> Remove</button></td>\n" +
+    "			</tr>\n" +
+    "			<tr class=\"success\" ng-if=\"myMasternodes.length > 1\">\n" +
+    "				<td></td>\n" +
+    "				<td></td>\n" +
+    "				<td class=\"hidden-xs\"></td>\n" +
+    "				<td class=\"hidden-xs\"></td>\n" +
+    "				<td><strong>{{balanceTotal | number:5}}</strong></td>\n" +
+    "				<td></td>\n" +
     "			</tr>\n" +
     "\n" +
     "		</tbody>\n" +

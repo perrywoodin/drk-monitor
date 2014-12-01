@@ -28,7 +28,7 @@ angular.module('service.masternode',['angular-storage'])
 		getMasterNodes: function(){
 			// curl -o masternodes.json https://drk.mn/api/masternodes?balance=1&portcheck=1
 			// json/masternodes.json
-			// https://drk.mn/api/masternodes?balance=1&portcheck=1 
+			// https://drk.mn/api/masternodes?balance=1&portcheck=1
 			var request = $http.get('https://drk.mn/api/masternodes?balance=1&portcheck=1');
 			return request.then(function(response){
 				MasterNodes = response.data.data;
@@ -65,6 +65,20 @@ angular.module('service.masternode',['angular-storage'])
 			deferred.resolve(myMasterNodes);
 
 			return deferred.promise;
+		},
+
+		getMyMasterNodesBalanceTotal: function(){
+			var totalBalance = 0;
+			var balance = [];
+			myMasterNodes.forEach(function(node){
+				balance.push(node.Balance.Value);
+			});
+			
+			totalBalance = balance.reduce(function(a,b){
+				return a + b;
+			});
+
+			return totalBalance;
 		},
 
 		// Save a masternode key to local storage.
